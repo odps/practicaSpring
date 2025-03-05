@@ -14,8 +14,8 @@ public class Shop {
     @Column(name = "shop_name")
     private String shopName;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @Column(name = "shop_owner")
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "shop_owner")
     private User shopOwner;
 
     @Column(name = "shop_adress", unique = true)
@@ -31,6 +31,12 @@ public class Shop {
 
     @OneToMany(mappedBy = "stockOwner")
     private List<Stock> stocks;
+
+    @OneToMany(mappedBy = "shop")
+    private List<Invoice> invoices;
+
+    @OneToMany(mappedBy = "shop")
+    private List<Order> orders;
 
     protected Shop() {}
 

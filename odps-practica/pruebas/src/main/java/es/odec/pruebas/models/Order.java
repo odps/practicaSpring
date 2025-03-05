@@ -12,9 +12,13 @@ public class Order {
     @Column(name = "order_pk")
     private int id;
 
-    @OneToMany
-    @Column(name = "order_product")
-    private List<Stock> product;
+    @ManyToOne
+    @JoinColumn(name = "order_shop")
+    private Shop shop;
+
+    @ManyToOne
+    @JoinColumn(name = "order_product")
+    private Product product;
 
     @Column(name = "order_quantity")
     private int quantity;
@@ -22,6 +26,9 @@ public class Order {
     private LocalDate createdAt;
     @Column(name = "modified_at")
     private LocalDate updatedAt;
+
+    @OneToMany(mappedBy = "order")
+    private List<Invoice> invoices;
 
     protected Order() {}
 

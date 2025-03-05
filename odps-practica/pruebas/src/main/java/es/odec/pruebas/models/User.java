@@ -24,7 +24,7 @@ public class User {
     @Column(name = "user_password")
     private String password;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @Column(name = "user_role")
     private Role role;
 
@@ -32,6 +32,12 @@ public class User {
     private LocalDate createdAt;
     @Column(name = "modified_at")
     private LocalDate updatedAt;
+
+    @OneToMany(mappedBy = "shopOwner")
+    private List<Shop> shops;
+
+    @OneToMany(mappedBy = "user")
+    private List<Invoice> invoices;
 
     public User() {}
 

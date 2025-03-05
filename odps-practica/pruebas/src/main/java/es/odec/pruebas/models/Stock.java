@@ -12,12 +12,12 @@ public class Stock {
     @Column(name = "stock_pk")
     private int stockPk;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @Column(name = "stock_owner")
+    @ManyToOne
+    @JoinColumn(name = "stock_owner")
     private Shop stockOwner;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @Column(name = "stock_product")
+    @ManyToOne
+    @JoinColumn(name = "stock_product")
     private Product stockProduct;
 
     @Column(name = "stock_quantity")

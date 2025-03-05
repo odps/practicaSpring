@@ -12,17 +12,17 @@ public class Invoice {
     @Column(name = "invoice_pk")
     private int invoicePk;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @Column(name = "shop_id")
-    private Shop shopId;
+    @ManyToOne
+    @JoinColumn(name = "shop_id")
+    private Shop shop;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @Column(name = "user_id")
-    private User userId;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @Column(name = "order_id")
-    private Order orderId;
+    @ManyToOne
+    @JoinColumn(name = "order_id")
+    private Order order;
 
     @Column(name = "invoice_total")
     private int invoiceTotal;

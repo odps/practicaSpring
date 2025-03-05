@@ -5,7 +5,7 @@ CREATE TABLE op_products (
 product_pk INT GENERATED ALWAYS AS IDENTITY,
 product_name VARCHAR(25) NOT NULL,
 product_description VARCHAR(50),
-product_price INT NOT NULL,
+product_price FLOAT NOT NULL,
 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 modified_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 PRIMARY KEY(product_pk)
@@ -42,13 +42,14 @@ user_firstname VARCHAR(50),
 user_lastname VARCHAR(50),
 user_email VARCHAR(50),
 username VARCHAR(25) NOT NULL,
-user_password VARCHAR(25) NOT NULL,
+user_password VARCHAR(255) NOT NULL,
 user_role INT,
 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 modified_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 PRIMARY KEY(user_pk),
 FOREIGN KEY(user_role) REFERENCES op_roles(role_pk) ON DELETE SET NULL,
-CONSTRAINT unique_username UNIQUE (username)
+CONSTRAINT unique_username UNIQUE (username),
+CONSTRAINT unique_email UNIQUE (user_email)
 );
 
 -- Tabla que contiene los datos de la tienda que realiza la venta.
@@ -58,7 +59,7 @@ shop_name VARCHAR(50),
 shop_owner INT NOT NULL,
 shop_adress VARCHAR(100),
 shop_email VARCHAR(50),
-shop_phone INT,
+shop_phone VARCHAR(15),
 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 modified_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 PRIMARY KEY(shop_pk),
@@ -82,25 +83,25 @@ FOREIGN KEY(stock_product) REFERENCES op_products(product_pk) ON DELETE CASCADE
 --Tabla de pedidos
 CREATE TABLE op_orders (
 order_pk INT GENERATED ALWAYS AS IDENTITY,
+order_shop INT NOT NULL,
 order_product INT NOT NULL,
 order_quantity INT NOT NULL,
 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 modified_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 PRIMARY KEY(order_pk),
-FOREIGN KEY(order_product) REFERENCES op_stock(stock_pk) ON DELETE SET NULL
+FOREIGN KEY(order_shop) REFERENCES op_shops(shop_pk),
+FOREIGN KEY(order_product) REFERENCES op_products(product_pk) ON DELETE SET NULL
 );
 
 -- Tabla de facturas, generadas cuando se realice una compra por parte del cliente.
 CREATE TABLE op_invoices (
 invoice_pk INT GENERATED ALWAYS AS IDENTITY,
-shop_id INT NOT NULL,
 user_id INT NOT NULL,
 order_id INT NOT NULL,
-invoice_total INT NOT NULL,
+invoice_total FLOAT NOT NULL,
 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 modified_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 PRIMARY KEY(invoice_pk),
-FOREIGN KEY(shop_id) REFERENCES op_shops(shop_pk),
 FOREIGN KEY(user_id) REFERENCES op_users(user_pk),
 FOREIGN KEY(order_id) REFERENCES op_orders(order_pk)
 );
