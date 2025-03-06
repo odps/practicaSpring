@@ -14,12 +14,14 @@ public class RoleService {
     private RoleRepo roleRepo;
 
     //Recoger datos de roles
-    public List<Role> getRoles() {
-        return roleRepo.findAll();
+    public ResponseEntity<List<Role>> getRoles() {
+        return ResponseEntity.ok().body(roleRepo.findAll());
     }
 
-    public Role getRole(int roleId) {
-        return roleRepo.findById(roleId).get();
+    public ResponseEntity<Role> getRole(int roleId) {
+        if (roleRepo.existsById(roleId)) {
+            return ResponseEntity.ok().body(roleRepo.findById(roleId).get());
+        } else return ResponseEntity.status(404).build();
     }
 
     //Crear un rol

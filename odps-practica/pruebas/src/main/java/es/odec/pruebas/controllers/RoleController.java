@@ -18,12 +18,12 @@ public class RoleController {
     //Obtener informacion de los roles
     @GetMapping("/list")
     public ResponseEntity<List<Role>> getRoles() {
-        return ResponseEntity.ok().body(roleService.getRoles());
+        return roleService.getRoles();
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Role> getRole(@PathVariable int id) {
-        return ResponseEntity.ok().body(roleService.getRole(id));
+        return roleService.getRole(id);
     }
 
     //Crear Roles

@@ -8,9 +8,12 @@ import java.util.Set;
 @Entity
 @Table(name = "op_permissions")
 public class Permission {
+
     @Id
-    @Column(name = "permissions_pk")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "permission_pk")
     private int id;
+
     @Column(name = "permission_type", length = 25)
     private String type;
 
@@ -18,6 +21,10 @@ public class Permission {
     private Set<Role> roles = new HashSet<>();
 
     public Permission() {
+    }
+
+    public Permission(String type) {
+        this.type = type;
     }
 
     public int getId() {
