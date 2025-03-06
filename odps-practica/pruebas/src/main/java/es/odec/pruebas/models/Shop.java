@@ -20,7 +20,7 @@ public class Shop {
 
     @Column(name = "shop_adress", length = 100)
     private String shopAdress;
-    @Column(name = "shop_email",length = 50)
+    @Column(name = "shop_email", length = 50)
     private String shopEmail;
     @Column(name = "shop_phone", length = 15)
     private String shopPhone;
@@ -36,11 +36,8 @@ public class Shop {
     @OneToMany(mappedBy = "shop")
     private List<Order> orders;
 
-    @OneToMany(mappedBy = "shop")
-    private List<Invoice> invoices;
-
-
-    protected Shop() {}
+    protected Shop() {
+    }
 
     public int getShopId() {
         return shopId;
@@ -112,14 +109,6 @@ public class Shop {
 
     public void setStocks(List<Stock> stocks) {
         this.stocks = stocks;
-    }
-
-    public List<Invoice> getInvoices() {
-        return invoices;
-    }
-
-    public void setInvoices(List<Invoice> invoices) {
-        this.invoices = invoices;
     }
 
     public List<Order> getOrders() {

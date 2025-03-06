@@ -1,6 +1,8 @@
 package es.odec.pruebas.models;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -9,7 +11,8 @@ import java.util.List;
 @Table(name = "op_products")
 public class Product {
     @Id
-    @Column(name = "product_pk")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "product_pk", nullable = false)
     private int productId;
     @Column(name = "product_name", length = 25, nullable = false)
     private String productName;
@@ -17,8 +20,10 @@ public class Product {
     private String productDescription;
     @Column(name = "product_price", nullable = false)
     private float productPrice;
+    @CreationTimestamp()
     @Column(name = "created_at")
     private LocalDate createdAt;
+    @UpdateTimestamp
     @Column(name = "modified_at")
     private LocalDate updatedAt;
 
@@ -28,7 +33,14 @@ public class Product {
     @OneToMany(mappedBy = "product")
     private List<Order> order;
 
-    protected Product() {}
+    protected Product() {
+    }
+
+    protected Product(String name, String description, float price) {
+        this.productName = name;
+        this.productDescription = description;
+        this.productPrice = price;
+    }
 
 
     @Override

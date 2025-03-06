@@ -10,6 +10,7 @@ import java.util.Set;
 @Table(name = "op_roles")
 public class Role {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "role_pk")
     private int id;
     @Column(name = "role_name", length = 15)
@@ -17,7 +18,7 @@ public class Role {
 
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
-            name="op_roles_access",
+            name = "op_roles_access",
             joinColumns = @JoinColumn(name = "role_id"),
             inverseJoinColumns = @JoinColumn(name = "permission_id")
     )
@@ -27,7 +28,12 @@ public class Role {
     private List<User> users;
 
 
-    public Role() {}
+    public Role() {
+    }
+
+    public Role(String roleName) {
+        this.roleName = roleName;
+    }
 
     public int getId() {
         return id;
