@@ -13,19 +13,16 @@ public class Invoice {
     private int invoicePk;
 
     @ManyToOne
-    @JoinColumn(name = "shop_id")
-    private Shop shop;
-
-    @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "order_id")
+    @JoinColumn(name = "order_id", nullable = false)
     private Order order;
 
-    @Column(name = "invoice_total")
-    private int invoiceTotal;
+    @Column(name = "invoice_total", nullable = false)
+    private float invoiceTotal;
+
     @Column(name = "created_at")
     private LocalDate createdAt;
     @Column(name = "modified_at")
@@ -37,31 +34,47 @@ public class Invoice {
         return invoicePk;
     }
 
-    public Shop getShopId() {
-        return shopId;
+    public void setInvoicePk(int invoicePk) {
+        this.invoicePk = invoicePk;
     }
 
-    public User getUserId() {
-        return userId;
+    public User getUser() {
+        return user;
     }
 
-    public Order getOrderId() {
-        return orderId;
+    public void setUser(User user) {
+        this.user = user;
     }
 
-    public void setInvoiceTotal(int invoiceTotal) {
-        this.invoiceTotal = invoiceTotal;
+    public Order getOrder() {
+        return order;
     }
 
-    public int getInvoiceTotal() {
+    public void setOrder(Order order) {
+        this.order = order;
+    }
+
+    public float getInvoiceTotal() {
         return invoiceTotal;
+    }
+
+    public void setInvoiceTotal(float invoiceTotal) {
+        this.invoiceTotal = invoiceTotal;
     }
 
     public LocalDate getCreatedAt() {
         return createdAt;
     }
 
+    public void setCreatedAt(LocalDate createdAt) {
+        this.createdAt = createdAt;
+    }
+
     public LocalDate getUpdatedAt() {
         return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDate updatedAt) {
+        this.updatedAt = updatedAt;
     }
 }

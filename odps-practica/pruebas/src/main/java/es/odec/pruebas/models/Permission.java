@@ -11,7 +11,7 @@ public class Permission {
     @Id
     @Column(name = "permissions_pk")
     private int id;
-    @Column(name = "permission_type")
+    @Column(name = "permission_type", length = 25)
     private String type;
 
     @ManyToMany(mappedBy = "permissions")
@@ -22,6 +22,10 @@ public class Permission {
 
     public int getId() {
         return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getType() {

@@ -12,7 +12,7 @@ public class Role {
     @Id
     @Column(name = "role_pk")
     private int id;
-    @Column(name = "role_name")
+    @Column(name = "role_name", length = 15)
     private String roleName;
 
     @ManyToMany(cascade = CascadeType.ALL)
@@ -31,6 +31,10 @@ public class Role {
 
     public int getId() {
         return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getRoleName() {

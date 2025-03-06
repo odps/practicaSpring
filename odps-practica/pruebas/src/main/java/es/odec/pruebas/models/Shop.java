@@ -11,19 +11,20 @@ public class Shop {
     @Id
     @Column(name = "shop_pk")
     private int shopId;
-    @Column(name = "shop_name")
+    @Column(name = "shop_name", length = 50)
     private String shopName;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "shop_owner")
+    @JoinColumn(name = "shop_owner", nullable = false)
     private User shopOwner;
 
-    @Column(name = "shop_adress", unique = true)
+    @Column(name = "shop_adress", length = 100)
     private String shopAdress;
-    @Column(name = "shop_email")
+    @Column(name = "shop_email",length = 50)
     private String shopEmail;
-    @Column(name = "shop_phone")
+    @Column(name = "shop_phone", length = 15)
     private String shopPhone;
+
     @Column(name = "created_at")
     private LocalDate createdAt;
     @Column(name = "modified_at")
@@ -33,15 +34,20 @@ public class Shop {
     private List<Stock> stocks;
 
     @OneToMany(mappedBy = "shop")
-    private List<Invoice> invoices;
+    private List<Order> orders;
 
     @OneToMany(mappedBy = "shop")
-    private List<Order> orders;
+    private List<Invoice> invoices;
+
 
     protected Shop() {}
 
     public int getShopId() {
         return shopId;
+    }
+
+    public void setShopId(int shopId) {
+        this.shopId = shopId;
     }
 
     public String getShopName() {
@@ -88,8 +94,39 @@ public class Shop {
         return createdAt;
     }
 
+    public void setCreatedAt(LocalDate createdAt) {
+        this.createdAt = createdAt;
+    }
+
     public LocalDate getUpdatedAt() {
         return updatedAt;
     }
 
+    public void setUpdatedAt(LocalDate updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public List<Stock> getStocks() {
+        return stocks;
+    }
+
+    public void setStocks(List<Stock> stocks) {
+        this.stocks = stocks;
+    }
+
+    public List<Invoice> getInvoices() {
+        return invoices;
+    }
+
+    public void setInvoices(List<Invoice> invoices) {
+        this.invoices = invoices;
+    }
+
+    public List<Order> getOrders() {
+        return orders;
+    }
+
+    public void setOrders(List<Order> orders) {
+        this.orders = orders;
+    }
 }

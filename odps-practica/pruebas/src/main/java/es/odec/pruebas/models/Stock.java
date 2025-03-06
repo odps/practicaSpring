@@ -13,14 +13,14 @@ public class Stock {
     private int stockPk;
 
     @ManyToOne
-    @JoinColumn(name = "stock_owner")
+    @JoinColumn(name = "stock_owner", nullable = false)
     private Shop stockOwner;
 
     @ManyToOne
-    @JoinColumn(name = "stock_product")
+    @JoinColumn(name = "stock_product", nullable = false)
     private Product stockProduct;
 
-    @Column(name = "stock_quantity")
+    @Column(name = "stock_quantity", nullable = false)
     private int stockQuantity;
     @Column(name = "created_at")
     private LocalDate createdAt;
@@ -34,6 +34,10 @@ public class Stock {
 
     public int getStockPk() {
         return stockPk;
+    }
+
+    public void setStockPk(int stockPk) {
+        this.stockPk = stockPk;
     }
 
     public Shop getStockOwner() {
@@ -64,8 +68,23 @@ public class Stock {
         return createdAt;
     }
 
+    public void setCreatedAt(LocalDate createdAt) {
+        this.createdAt = createdAt;
+    }
+
     public LocalDate getUpdatedAt() {
         return updatedAt;
     }
 
+    public void setUpdatedAt(LocalDate updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public Order getOrders() {
+        return orders;
+    }
+
+    public void setOrders(Order orders) {
+        this.orders = orders;
+    }
 }

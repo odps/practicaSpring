@@ -13,14 +13,14 @@ public class Order {
     private int id;
 
     @ManyToOne
-    @JoinColumn(name = "order_shop")
+    @JoinColumn(name = "order_shop", nullable = false)
     private Shop shop;
 
     @ManyToOne
-    @JoinColumn(name = "order_product")
+    @JoinColumn(name = "order_product", nullable = false)
     private Product product;
 
-    @Column(name = "order_quantity")
+    @Column(name = "order_quantity", nullable = false)
     private int quantity;
     @Column(name = "created_at")
     private LocalDate createdAt;
@@ -32,33 +32,5 @@ public class Order {
 
     protected Order() {}
 
-    public int getId() {
-        return id;
-    }
-
-    public List<Stock> getProduct() {
-        return product;
-    }
-
-    public void setProduct(List<Stock> product) {
-        this.product = product;
-    }
-
-    public int getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
-    }
-
-    public LocalDate getCreatedAt() {
-        return createdAt;
-    }
-
-
-    public LocalDate getUpdatedAt() {
-        return updatedAt;
-    }
 
 }

@@ -6,6 +6,7 @@ import javax.xml.crypto.Data;
 import java.lang.reflect.Type;
 import java.time.LocalDate;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "op_users")
@@ -13,19 +14,19 @@ public class User {
     @Id
     @Column(name = "user_pk")
     private int userId;
-    @Column(name = "user_firstname")
+    @Column(name = "user_firstname", length = 50)
     private String firstName;
-    @Column(name = "user_lastname")
+    @Column(name = "user_lastname", length = 50)
     private String lastName;
-    @Column(name = "user_email")
+    @Column(name = "user_email", length = 50)
     private String email;
-    @Column(name = "username")
+    @Column(name = "username", length = 25, nullable = false)
     private String username;
-    @Column(name = "user_password")
+    @Column(name = "user_password", nullable = false)
     private String password;
 
     @ManyToOne
-    @Column(name = "user_role")
+    @JoinColumn(name = "user_role")
     private Role role;
 
     @Column(name = "created_at")
@@ -43,6 +44,10 @@ public class User {
 
     public int getUserId() {
         return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 
     public String getFirstName() {
@@ -97,7 +102,31 @@ public class User {
         return createdAt;
     }
 
+    public void setCreatedAt(LocalDate createdAt) {
+        this.createdAt = createdAt;
+    }
+
     public LocalDate getUpdatedAt() {
         return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDate updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public List<Shop> getShops() {
+        return shops;
+    }
+
+    public void setShops(List<Shop> shops) {
+        this.shops = shops;
+    }
+
+    public List<Invoice> getInvoices() {
+        return invoices;
+    }
+
+    public void setInvoices(List<Invoice> invoices) {
+        this.invoices = invoices;
     }
 }
