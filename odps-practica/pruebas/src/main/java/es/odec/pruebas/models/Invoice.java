@@ -1,14 +1,16 @@
 package es.odec.pruebas.models;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
-import java.beans.ConstructorProperties;
 import java.time.LocalDate;
 
 @Entity
 @Table(name = "op_invoices")
 public class Invoice {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "invoice_pk")
     private int invoicePk;
 
@@ -23,12 +25,15 @@ public class Invoice {
     @Column(name = "invoice_total", nullable = false)
     private float invoiceTotal;
 
+    @CreationTimestamp
     @Column(name = "created_at")
     private LocalDate createdAt;
+    @UpdateTimestamp
     @Column(name = "modified_at")
     private LocalDate updatedAt;
 
-    protected Invoice(){}
+    protected Invoice() {
+    }
 
     public int getInvoicePk() {
         return invoicePk;

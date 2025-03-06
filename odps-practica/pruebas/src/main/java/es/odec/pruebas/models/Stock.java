@@ -1,14 +1,16 @@
 package es.odec.pruebas.models;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDate;
-import java.util.List;
 
 @Entity
 @Table(name = "op_stock")
 public class Stock {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "stock_pk")
     private int stockPk;
 
@@ -22,15 +24,21 @@ public class Stock {
 
     @Column(name = "stock_quantity", nullable = false)
     private int stockQuantity;
+
+    @CreationTimestamp
     @Column(name = "created_at")
     private LocalDate createdAt;
+    @UpdateTimestamp
     @Column(name = "modified_at")
     private LocalDate updatedAt;
 
     @ManyToOne()
+    @JoinColumn(name = "stock_orders")
     private Order orders;
 
-    public Stock() {}
+    public Stock() {
+    }
+
 
     public int getStockPk() {
         return stockPk;

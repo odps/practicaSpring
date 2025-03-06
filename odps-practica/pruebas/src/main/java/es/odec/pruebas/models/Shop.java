@@ -1,6 +1,8 @@
 package es.odec.pruebas.models;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -9,6 +11,7 @@ import java.util.List;
 @Table(name = "op_shops")
 public class Shop {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "shop_pk")
     private int shopId;
     @Column(name = "shop_name", length = 50)
@@ -25,8 +28,10 @@ public class Shop {
     @Column(name = "shop_phone", length = 15)
     private String shopPhone;
 
+    @CreationTimestamp
     @Column(name = "created_at")
     private LocalDate createdAt;
+    @UpdateTimestamp
     @Column(name = "modified_at")
     private LocalDate updatedAt;
 

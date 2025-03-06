@@ -14,12 +14,14 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "product_pk", nullable = false)
     private int productId;
+
     @Column(name = "product_name", length = 25, nullable = false)
     private String productName;
     @Column(name = "product_description", length = 50)
     private String productDescription;
     @Column(name = "product_price", nullable = false)
     private float productPrice;
+    
     @CreationTimestamp()
     @Column(name = "created_at")
     private LocalDate createdAt;

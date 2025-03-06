@@ -1,17 +1,17 @@
 package es.odec.pruebas.models;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
-import javax.xml.crypto.Data;
-import java.lang.reflect.Type;
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 
 @Entity
 @Table(name = "op_users")
 public class User {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_pk")
     private int userId;
     @Column(name = "user_firstname", length = 50)
@@ -29,8 +29,10 @@ public class User {
     @JoinColumn(name = "user_role")
     private Role role;
 
+    @CreationTimestamp
     @Column(name = "created_at")
     private LocalDate createdAt;
+    @UpdateTimestamp
     @Column(name = "modified_at")
     private LocalDate updatedAt;
 
@@ -40,7 +42,17 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<Invoice> invoices;
 
-    public User() {}
+    public User() {
+    }
+
+    public User(String firstName, String lastName, String email, String username, String password, Role role) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.username = username;
+        this.password = password;
+        this.role = role;
+    }
 
     public int getUserId() {
         return userId;
