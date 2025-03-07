@@ -1,5 +1,6 @@
 package es.odec.pruebas.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -16,10 +17,12 @@ public class Stock {
 
     @ManyToOne
     @JoinColumn(name = "stock_owner", nullable = false)
+    @JsonIgnoreProperties({"stocks", "orders"})
     private Shop stockOwner;
 
     @ManyToOne
     @JoinColumn(name = "stock_product", nullable = false)
+    @JsonIgnoreProperties("stock")
     private Product stockProduct;
 
     @Column(name = "stock_quantity", nullable = false)
@@ -34,11 +37,17 @@ public class Stock {
 
     @ManyToOne()
     @JoinColumn(name = "stock_orders")
+    @JsonIgnoreProperties("orders")
     private Order orders;
 
     public Stock() {
     }
 
+    public Stock(Shop stockOwner, Product stockProduct, int stockQuantity) {
+        this.stockOwner = stockOwner;
+        this.stockProduct = stockProduct;
+        this.stockQuantity = stockQuantity;
+    }
 
     public int getStockPk() {
         return stockPk;

@@ -20,7 +20,7 @@ public class Shop {
 
     @ManyToOne
     @JoinColumn(name = "shop_owner", nullable = false)
-    @JsonIgnoreProperties("shops")
+    @JsonIgnoreProperties({"shops", "username", "password", "invoices"})
     private User shopOwner;
 
     @Column(name = "shop_adress", length = 100)

@@ -15,26 +15,36 @@ public class StockService implements IStockService {
 
     @Override
     public ResponseEntity<List<Stock>> getStocks() {
-        return null;
+        return ResponseEntity.ok().body(stockRepo.findAll());
     }
 
     @Override
     public ResponseEntity<Stock> getStock(int id) {
-        return null;
+        if (!stockRepo.existsById(id)) {
+            return ResponseEntity.status(404).build();
+        }
+        return ResponseEntity.ok().body(stockRepo.findById(id).get());
     }
 
     @Override
-    public ResponseEntity<Stock> createStock() {
-        return null;
+    public ResponseEntity<Stock> createStock(Stock stock) {
+        if (stock == null) {
+            return ResponseEntity.status(400).build();
+        }
+        return ResponseEntity.ok().body(stockRepo.save(stock));
     }
 
     @Override
-    public ResponseEntity<Stock> updateStock(Stock stock) {
+    public ResponseEntity<Stock> updateStock(Stock stock, int id) {
         return null;
     }
 
     @Override
     public ResponseEntity<Stock> deleteStock(int id) {
-        return null;
+        if (!stockRepo.existsById(id)) {
+            return ResponseEntity.status(404).build();
+        }
+        stockRepo.deleteById(id);
+        return ResponseEntity.ok().build();
     }
 }

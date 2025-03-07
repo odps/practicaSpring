@@ -10,9 +10,9 @@ public interface IStockService {
 
     ResponseEntity<Stock> getStock(int id);
 
-    ResponseEntity<Stock> createStock();
+    ResponseEntity<Stock> createStock(Stock stock);
 
-    ResponseEntity<Stock> updateStock(Stock stock);
+    ResponseEntity<Stock> updateStock(Stock stock, int id);
 
     ResponseEntity<Stock> deleteStock(int id);
 
