@@ -1,5 +1,6 @@
 package es.odec.pruebas.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -17,8 +18,9 @@ public class Shop {
     @Column(name = "shop_name", length = 50)
     private String shopName;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "shop_owner", nullable = false)
+    @JsonIgnoreProperties("shops")
     private User shopOwner;
 
     @Column(name = "shop_adress", length = 100)
@@ -42,6 +44,14 @@ public class Shop {
     private List<Order> orders;
 
     protected Shop() {
+    }
+
+    public Shop(String shopName, User shopOwner, String shopAdress, String shopEmail, String shopPhone) {
+        this.shopName = shopName;
+        this.shopOwner = shopOwner;
+        this.shopAdress = shopAdress;
+        this.shopEmail = shopEmail;
+        this.shopPhone = shopPhone;
     }
 
     public int getShopId() {

@@ -3,32 +3,40 @@ package es.odec.pruebas.services;
 import es.odec.pruebas.models.Product;
 import es.odec.pruebas.repositories.ProductRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-public class ProductService {
+public class ProductService implements IProductService {
 
     @Autowired
     ProductRepo productRepo;
 
     //Recoger datos de productos
-    public List<Product> getProducts() {
-        return productRepo.findAll();
+    @Override
+    public ResponseEntity<List<Product>> getProducts() {
+        return ResponseEntity.ok().body(productRepo.findAll());
     }
 
-    public Product getProductById(int productId) {
-        return productRepo.findById(productId).get();
+    @Override
+    public ResponseEntity<Product> getProductById(int productId) {
+        return ResponseEntity.ok().body(productRepo.findById(productId).get());
     }
 
     // Crear productos
-    public Product save(Product product) {
-        return productRepo.save(product);
+    @Override
+    public ResponseEntity<Product> save(Product product) {
+        if (product != null) {
+            return ResponseEntity.ok(productRepo.save(product));
+        } else return ResponseEntity.notFound().build();
+
     }
 
     // Modificar productos
-    public void update(Product product, int id) {
+    @Override
+    public ResponseEntity<Product> update(Product product, int id) {
 
         Product editable = productRepo.findById(id).get();
 
@@ -48,18 +56,16 @@ public class ProductService {
                 editable.setProductPrice(productPrice);
             }
 
-            productRepo.save(editable);
+            return ResponseEntity.ok().body(productRepo.save(editable));
 
-        }
+        } else return ResponseEntity.notFound().build();
     }
 
+
     //Eliminar productos
+    @Override
     public void delete(int id) {
-        try {
-            productRepo.deleteById(id);
-        } catch (Exception e) {
-            System.out.println("Ha ocurrido un error: " + e.getMessage());
-        }
+        productRepo.deleteById(id);
     }
 
 

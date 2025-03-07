@@ -1,9 +1,9 @@
 package es.odec.pruebas.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -13,20 +13,21 @@ public class Role {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "role_pk")
     private int id;
-    
+
     @Column(name = "role_name", length = 15)
     private String roleName;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany
     @JoinTable(
             name = "op_roles_access",
             joinColumns = @JoinColumn(name = "role_id"),
             inverseJoinColumns = @JoinColumn(name = "permission_id")
     )
+    @JsonIgnoreProperties("roles")
     private Set<Permission> permissions = new HashSet<>();
 
     @OneToMany(mappedBy = "role")
-    private List<User> users;
+    private Set<User> users;
 
 
     public Role() {
@@ -60,11 +61,11 @@ public class Role {
         this.permissions = permissions;
     }
 
-    public List<User> getUsers() {
+    public Set<User> getUsers() {
         return users;
     }
 
-    public void setUsers(List<User> users) {
+    public void setUsers(Set<User> users) {
         this.users = users;
     }
 }

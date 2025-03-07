@@ -1,5 +1,6 @@
 package es.odec.pruebas.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
 import java.util.HashSet;
@@ -17,6 +18,7 @@ public class Permission {
     @Column(name = "permission_type", length = 25)
     private String type;
 
+    @JsonIgnoreProperties("permissions")
     @ManyToMany(mappedBy = "permissions")
     private Set<Role> roles = new HashSet<>();
 
