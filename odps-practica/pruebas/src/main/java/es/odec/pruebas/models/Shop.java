@@ -1,5 +1,6 @@
 package es.odec.pruebas.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -40,6 +41,7 @@ public class Shop {
     @OneToMany(mappedBy = "stockOwner")
     private List<Stock> stocks;
 
+    @JsonIgnoreProperties("shop")
     @OneToMany(mappedBy = "shop")
     private List<Order> orders;
 

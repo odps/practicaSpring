@@ -1,5 +1,6 @@
 package es.odec.pruebas.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -16,10 +17,12 @@ public class Invoice {
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
+    @JsonIgnoreProperties({"invoices", "shops", "password"})
     private User user;
 
     @ManyToOne
     @JoinColumn(name = "order_id", nullable = false)
+    @JsonIgnoreProperties("invoices")
     private Order order;
 
     @Column(name = "invoice_total", nullable = false)
@@ -33,6 +36,12 @@ public class Invoice {
     private LocalDate updatedAt;
 
     protected Invoice() {
+    }
+
+    public Invoice(User user, Order order, float invoiceTotal) {
+        this.user = user;
+        this.order = order;
+        this.invoiceTotal = invoiceTotal;
     }
 
     public int getInvoicePk() {

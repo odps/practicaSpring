@@ -10,9 +10,9 @@ public interface IOrderService {
 
     ResponseEntity<Order> getOrder(int id);
 
-    ResponseEntity<Order> createOrder();
+    ResponseEntity<Order> createOrder(Order order);
 
-    ResponseEntity<Order> updateOrder(Order order);
+    ResponseEntity<Order> updateOrder(Order order, int id);
 
     ResponseEntity<Order> deleteOrder(int id);
 

@@ -25,7 +25,7 @@ permission_type VARCHAR(25),
 PRIMARY KEY(permission_pk)
 );
 
---Relacion Permisos y Roles
+-- Relacion Permisos y Roles
 CREATE TABLE op_roles_access(
 role_access_pk INT GENERATED ALWAYS AS IDENTITY,
 role_id INT NOT NULL,
@@ -80,7 +80,7 @@ FOREIGN KEY(stock_owner) REFERENCES op_shops(shop_pk) ON DELETE CASCADE,
 FOREIGN KEY(stock_product) REFERENCES op_products(product_pk) ON DELETE CASCADE
 );
 
---Tabla de pedidos
+-- Tabla de pedidos
 CREATE TABLE op_orders (
 order_pk INT GENERATED ALWAYS AS IDENTITY,
 order_shop INT NOT NULL,
@@ -110,6 +110,7 @@ FOREIGN KEY(order_id) REFERENCES op_orders(order_pk)
 -- DROP TABLE op_invoices;
 -- DROP TABLE op_orders;
 -- DROP TABLE op_stock;
+-- DROP TABLE op_roles_access;
 -- DROP TABLE op_shops;
 -- DROP TABLE op_users;
 -- DROP TABLE op_permissions;

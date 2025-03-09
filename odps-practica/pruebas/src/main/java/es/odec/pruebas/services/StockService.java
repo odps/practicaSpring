@@ -1,5 +1,6 @@
 package es.odec.pruebas.services;
 
+import es.odec.pruebas.models.Shop;
 import es.odec.pruebas.models.Stock;
 import es.odec.pruebas.repositories.StockRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +37,19 @@ public class StockService implements IStockService {
 
     @Override
     public ResponseEntity<Stock> updateStock(Stock stock, int id) {
-        return null;
+
+        if (!stockRepo.existsById(id)) {
+            return ResponseEntity.status(404).build();
+        }
+
+        Stock stockNew = stockRepo.findById(id).get();
+        stockNew.setStockOwner(stock.getStockOwner());
+        stockNew.setStockProduct(stock.getStockProduct());
+        stockNew.setStockQuantity(stock.getStockQuantity());
+        stockNew.setOrders(stock.getOrders());
+
+        Stock saved = stockRepo.save(stockNew);
+        return ResponseEntity.ok().body(saved);
     }
 
     @Override

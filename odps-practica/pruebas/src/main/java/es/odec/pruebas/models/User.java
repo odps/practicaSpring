@@ -42,6 +42,7 @@ public class User {
     private List<Shop> shops;
 
     @OneToMany(mappedBy = "user")
+    @JsonIgnoreProperties("user")
     private List<Invoice> invoices;
 
     public User() {

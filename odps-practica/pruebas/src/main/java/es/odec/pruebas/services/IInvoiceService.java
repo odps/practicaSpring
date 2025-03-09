@@ -10,9 +10,9 @@ public interface IInvoiceService {
 
     ResponseEntity<Invoice> getInvoice(int id);
 
-    ResponseEntity<Invoice> createInvoice();
+    ResponseEntity<Invoice> createInvoice(Invoice invoice);
 
-    ResponseEntity<Invoice> updateInvoice(Invoice invoice);
+    ResponseEntity<Invoice> updateInvoice(Invoice invoice, int id);
 
     ResponseEntity<Invoice> deleteInvoice(int id);
 
