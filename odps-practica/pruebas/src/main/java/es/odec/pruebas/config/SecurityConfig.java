@@ -16,7 +16,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
@@ -34,15 +33,47 @@ public class SecurityConfig {
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)
+            throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
+        // http.csrf().disable().cors().disable()
+        // .authorizeRequests().requestMatchers("/register", "/login").permitAll()
+        // .anyRequest().authenticated()
+        // .and().sessionManagement()
+        // .sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().logout().permitAll();
+
         http.csrf().disable().cors().disable()
-                .authorizeRequests().requestMatchers("/register", "/login").permitAll()
+                .authorizeRequests()
+                // Publicos
+                .requestMatchers("/register", "/login", "/hello").permitAll()
+
+                // Admin
+                .requestMatchers("/user/**", "/role/**", "/permission/**").hasAuthority("MANAGE_USERS")
+
+                // Shop
+                .requestMatchers("/shop/**").hasAnyAuthority("MANAGE_USERS", "MANAGE_STOCK")
+
+                // Product
+                .requestMatchers("/product/create", "/product/edit/**", "/product/delete/**")
+                .hasAnyAuthority("CREATE_PRODUCT", "UPDATE_PRODUCT", "DELETE_PRODUCT")
+                .requestMatchers("/product/list", "/product/**").authenticated()
+
+                // Stock
+                .requestMatchers("/stock/**").hasAuthority("MANAGE_STOCK")
+
+                // Order
+                .requestMatchers("/order/create").hasAuthority("PLACE_ORDER")
+                .requestMatchers("/order/**").hasAnyAuthority("VIEW_ALL_ORDERS", "PLACE_ORDER")
+
+                // Invoice
+                .requestMatchers("/invoice/**").authenticated()
+
+                // Todo lo demas
                 .anyRequest().authenticated()
                 .and().sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().logout().permitAll();

@@ -1,6 +1,5 @@
 package es.odec.pruebas.config;
 
-
 import es.odec.pruebas.services.CustomUserDetailsService;
 import es.odec.pruebas.utils.JwtUtil;
 import jakarta.servlet.FilterChain;
@@ -18,7 +17,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-
 
 @Component
 @AllArgsConstructor
@@ -49,13 +47,21 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
             UserDetails userDetails = this.customUserDetailsService.loadUserByUsername(username);
 
-            if (jwtUtil.validateToken(jwt, userDetails)) {
+            // if (jwtUtil.validateToken(jwt, userDetails)) {
 
-                UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
+            // UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new
+            // UsernamePasswordAuthenticationToken(
+            // userDetails, null, userDetails.getAuthorities());
+            // usernamePasswordAuthenticationToken
+            // .setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+            // SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+            // }
+
+            if (jwtUtil.validateToken(jwt, userDetails)) {
+                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                         userDetails, null, userDetails.getAuthorities());
-                usernamePasswordAuthenticationToken
-                        .setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                SecurityContextHolder.getContext().setAuthentication(authentication);
             }
         }
 
