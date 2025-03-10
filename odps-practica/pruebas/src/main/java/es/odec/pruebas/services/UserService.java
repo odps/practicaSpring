@@ -29,7 +29,7 @@ public class UserService implements IUserService {
 
     @Override
     public ResponseEntity<User> createUser(User user) {
-        if (user == null) {
+        if (user == null || userRepo.findByUsername(user.getUsername()) != null) {
             return ResponseEntity.badRequest().build();
         }
         return ResponseEntity.ok().body(userRepo.save(user));

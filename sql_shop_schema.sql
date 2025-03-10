@@ -31,8 +31,8 @@ role_access_pk INT GENERATED ALWAYS AS IDENTITY,
 role_id INT NOT NULL,
 permission_id INT NOT NULL,
 PRIMARY KEY(role_access_pk),
-FOREIGN KEY(role_id) REFERENCES op_roles(role_pk),
-FOREIGN KEY(permission_id) REFERENCES op_permissions(permission_pk)
+FOREIGN KEY(role_id) REFERENCES op_roles(role_pk) ON DELETE CASCADE,
+FOREIGN KEY(permission_id) REFERENCES op_permissions(permission_pk) ON DELETE CASCADE
 );
 
 -- Tabla de usuarios
@@ -47,7 +47,7 @@ user_role INT,
 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 modified_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 PRIMARY KEY(user_pk),
-FOREIGN KEY(user_role) REFERENCES op_roles(role_pk) ON DELETE SET NULL,
+FOREIGN KEY(user_role) REFERENCES op_roles(role_pk) ON DELETE CASCADE,
 CONSTRAINT unique_username UNIQUE (username),
 CONSTRAINT unique_email UNIQUE (user_email)
 );
@@ -63,7 +63,7 @@ shop_phone VARCHAR(15),
 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 modified_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 PRIMARY KEY(shop_pk),
-FOREIGN KEY(shop_owner) REFERENCES op_users(user_pk),
+FOREIGN KEY(shop_owner) REFERENCES op_users(user_pk) ON DELETE CASCADE,
 CONSTRAINT unique_shopname UNIQUE (shop_name)
 );
 
@@ -89,8 +89,8 @@ order_quantity INT NOT NULL,
 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 modified_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 PRIMARY KEY(order_pk),
-FOREIGN KEY(order_shop) REFERENCES op_shops(shop_pk),
-FOREIGN KEY(order_product) REFERENCES op_products(product_pk) ON DELETE SET NULL
+FOREIGN KEY(order_shop) REFERENCES op_shops(shop_pk) ON DELETE CASCADE,
+FOREIGN KEY(order_product) REFERENCES op_products(product_pk) ON DELETE CASCADE
 );
 
 -- Tabla de facturas, generadas cuando se realice una compra por parte del cliente.
@@ -102,17 +102,17 @@ invoice_total FLOAT NOT NULL,
 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 modified_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 PRIMARY KEY(invoice_pk),
-FOREIGN KEY(user_id) REFERENCES op_users(user_pk),
-FOREIGN KEY(order_id) REFERENCES op_orders(order_pk)
+FOREIGN KEY(user_id) REFERENCES op_users(user_pk) ON DELETE CASCADE,
+FOREIGN KEY(order_id) REFERENCES op_orders(order_pk) ON DELETE CASCADE
 );
 
 
 -- DROP TABLE op_invoices;
--- DROP TABLE op_orders;
 -- DROP TABLE op_stock;
 -- DROP TABLE op_roles_access;
+-- DROP TABLE op_permissions;
+-- DROP TABLE op_orders;
+-- DROP TABLE op_products;
 -- DROP TABLE op_shops;
 -- DROP TABLE op_users;
--- DROP TABLE op_permissions;
 -- DROP TABLE op_roles;
--- DROP TABLE op_products;
