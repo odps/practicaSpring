@@ -29,7 +29,7 @@ public class ProductService implements IProductService {
     @Override
     public ResponseEntity<Product> save(Product product) {
         if (product != null) {
-            return ResponseEntity.ok(productRepo.save(product));
+            return ResponseEntity.ok().body(productRepo.save(product));
         } else return ResponseEntity.notFound().build();
 
     }

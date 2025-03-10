@@ -18,11 +18,13 @@ public class Order {
 
     @ManyToOne
     @JoinColumn(name = "order_shop", nullable = false)
+    @JsonIgnoreProperties({"stocks", "orders"})
     private Shop shop;
 
-    @JsonIgnoreProperties({"order", "invoices"})
+
     @ManyToOne
     @JoinColumn(name = "order_product", nullable = false)
+    @JsonIgnoreProperties({"order", "invoices", "stock"})
     private Product product;
 
     @Column(name = "order_quantity", nullable = false)
