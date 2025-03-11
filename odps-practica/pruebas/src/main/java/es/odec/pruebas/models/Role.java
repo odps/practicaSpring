@@ -17,7 +17,7 @@ public class Role {
     @Column(name = "role_name", length = 15)
     private String roleName;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "op_roles_access",
             joinColumns = @JoinColumn(name = "role_id"),
@@ -26,7 +26,7 @@ public class Role {
     @JsonIgnoreProperties("roles")
     private Set<Permission> permissions = new HashSet<>();
 
-    @OneToMany(mappedBy = "role")
+    @OneToMany(mappedBy = "role", fetch = FetchType.EAGER)
     private Set<User> users;
 
 

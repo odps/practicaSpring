@@ -38,10 +38,10 @@ public class User {
     @Column(name = "modified_at")
     private LocalDate updatedAt;
 
-    @OneToMany(mappedBy = "shopOwner")
+    @OneToMany(mappedBy = "shopOwner", fetch = FetchType.EAGER)
     private List<Shop> shops;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
     @JsonIgnoreProperties("user")
     private List<Invoice> invoices;
 

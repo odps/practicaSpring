@@ -47,10 +47,10 @@ public class AuthController {
 
     @PostMapping("/login")
     public String loginUser(@RequestBody User authUser) throws Exception {
+        System.out.println("=== Entrada al endpoint de login");
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(authUser.getUsername(), authUser.getPassword())
         );
-
         final UserDetails userDetails = userDetailsService.loadUserByUsername(authUser.getUsername());
         final String jwt = jwtUtil.generateToken(userDetails);
 

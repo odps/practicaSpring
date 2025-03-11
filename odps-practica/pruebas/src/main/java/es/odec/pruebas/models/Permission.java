@@ -19,7 +19,7 @@ public class Permission {
     private String type;
 
     @JsonIgnoreProperties("permissions")
-    @ManyToMany(mappedBy = "permissions")
+    @ManyToMany(mappedBy = "permissions", fetch = FetchType.EAGER)
     private Set<Role> roles = new HashSet<>();
 
     public Permission() {
@@ -27,6 +27,14 @@ public class Permission {
 
     public Permission(String type) {
         this.type = type;
+    }
+
+    @Override
+    public String toString() {
+        return "Permission{" +
+                "id=" + id +
+                ", type='" + type + '\'' +
+                '}';
     }
 
     public int getId() {

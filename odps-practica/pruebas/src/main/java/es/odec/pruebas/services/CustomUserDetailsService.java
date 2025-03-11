@@ -11,9 +11,10 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
@@ -21,17 +22,27 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Autowired
     private UserRepo userRepository;
 
-    //Metodos para recuperar las autoridades de un usuario
+    //    Metodos para recuperar las autoridades de un usuario
     public Collection<GrantedAuthority> mapToAuthorities(Set<Permission> permissions) {
-        return permissions.stream().map(permission -> new SimpleGrantedAuthority(permission.getType())).collect(Collectors.toSet());
+
+        List<GrantedAuthority> authorities = new ArrayList<>();
+
+        for (Permission permission : permissions) {
+            authorities.add(new SimpleGrantedAuthority(permission.getType()));
+        }
+
+        return authorities;
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        System.out.println("=== Entrada en controlador de login");
         User user = userRepository.findByUsername(username);
         if (user == null) {
             throw new UsernameNotFoundException("User not found");
         }
+        System.out.println("=== Permisos encontrados de user en login: " + mapToAuthorities(user.getRole().getPermissions()));
+        //        return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), new ArrayList<>());
         return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), mapToAuthorities(user.getRole().getPermissions()));
     }
 }

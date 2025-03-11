@@ -16,6 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
@@ -33,30 +34,29 @@ public class SecurityConfig {
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)
-            throws Exception {
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
-        // http.csrf().disable().cors().disable()
-        // .authorizeRequests().requestMatchers("/register", "/login").permitAll()
-        // .anyRequest().authenticated()
-        // .and().sessionManagement()
-        // .sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().logout().permitAll();
+//        http.csrf().disable().cors().disable()
+//                .authorizeRequests().requestMatchers("/register", "/login").permitAll()
+//                .anyRequest().authenticated()
+//                .and().sessionManagement()
+//                .sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().logout().permitAll();
 
         http.csrf().disable().cors().disable()
                 .authorizeRequests()
                 // Publicos
-                .requestMatchers("/register", "/login", "/hello").permitAll()
+                .requestMatchers("/register", "/login").permitAll()
 
-                // Admin
-                .requestMatchers("/user/**", "/role/**", "/permission/**").hasAuthority("MANAGE_USERS")
+                // Admin .hasAuthority("MANAGE_USERS")
+                .requestMatchers("/user/**", "/role/**", "/permission/**").hasAnyAuthority("CREATE", "DELETE")
 
                 // Shop
-                .requestMatchers("/shop/**").hasAnyAuthority("MANAGE_USERS", "MANAGE_STOCK")
+                .requestMatchers("/shop/**").hasAnyAuthority("MANAGE_SHOP", "MANAGE_STOCK")
 
                 // Product
                 .requestMatchers("/product/create", "/product/edit/**", "/product/delete/**")
@@ -68,12 +68,14 @@ public class SecurityConfig {
 
                 // Order
                 .requestMatchers("/order/create").hasAuthority("PLACE_ORDER")
-                .requestMatchers("/order/**").hasAnyAuthority("VIEW_ALL_ORDERS", "PLACE_ORDER")
+                .requestMatchers("/order/**").hasAnyAuthority("VIEW_ORDERS")
 
                 // Invoice
                 .requestMatchers("/invoice/**").authenticated()
 
-                // Todo lo demas
+                //Hello para pruebas
+                .requestMatchers("/hello").authenticated()
+
                 .anyRequest().authenticated()
                 .and().sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().logout().permitAll();
