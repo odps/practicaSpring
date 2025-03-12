@@ -98,6 +98,14 @@
         <!--            <version>8.0.33</version>-->
         <!--        </dependency>-->
 
+
+        <!--        Dependencia de kaczmarzyk-->
+        <dependency>
+            <groupId>net.kaczmarzyk</groupId>
+            <artifactId>specification-arg-resolver</artifactId>
+            <version>3.1.0</version>
+        </dependency>
+
     </dependencies>
 
     <build>
