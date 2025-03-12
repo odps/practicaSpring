@@ -3,6 +3,10 @@ package es.odec.pruebas.services;
 import es.odec.pruebas.models.User;
 import es.odec.pruebas.repositories.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -14,10 +18,49 @@ public class UserService implements IUserService {
     @Autowired
     UserRepo userRepo;
 
+    //Recoger usuarios
     @Override
     public ResponseEntity<List<User>> getUsers() {
-        return ResponseEntity.ok().body(userRepo.findAll());
+        List<User> users = userRepo.findAll();
+        return ResponseEntity.ok().body(users);
     }
+
+    //Recoger usuarios con paginado manual
+//    public ResponseEntity<List<User>> getUsers(int page, int size) {
+//        List<User> users = userRepo.findAll();
+//        List<User> paginated = users.subList((page - 1) * size, page * size);
+//
+//        return ResponseEntity.ok().body(paginated);
+//    }
+
+    //Recoger usuarios con JPA Pageable
+//    public ResponseEntity<?> getUsers(int page, int size, String sort, String filter) {
+//        try {
+//            Sort.Direction sortMethod = Sort.Direction.fromString(sort);
+//            Pageable pageable = PageRequest.of(page, size, Sort.by(sortMethod, filter));
+//            Page<User> result = userRepo.findAll(pageable);
+//            System.out.println(sort + " " + filter);
+//            return ResponseEntity.ok().body(result);
+//        } catch (Exception e) {
+//            return ResponseEntity.badRequest().body("Ha ocurrido un error: " + e.getMessage());
+//        }
+//    }
+
+    public ResponseEntity<?> getUsers(int page, int size, String[] sortParams, String sort) {
+        try {
+            //Determina direccion del sort (ASC,DESC,REVERSE)
+            Sort.Direction sortMethod = Sort.Direction.fromString(sort);
+
+            //Ordena los resultados segun el Array de parametros enviados
+            Pageable pageable = PageRequest.of(page, size, Sort.by(sortMethod, sortParams));
+            Page<User> result = userRepo.findAll(pageable);
+
+            return ResponseEntity.ok().body(result);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Ha ocurrido un error: " + e.getMessage());
+        }
+    }
+
 
     @Override
     public ResponseEntity<User> getUser(int id) {

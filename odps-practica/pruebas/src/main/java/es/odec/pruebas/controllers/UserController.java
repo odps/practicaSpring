@@ -6,8 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/user")
 public class UserController {
@@ -17,8 +15,12 @@ public class UserController {
 
     //Coger datos de los usuarios
     @GetMapping("/list")
-    public ResponseEntity<List<User>> getUsers() {
-        return userService.getUsers();
+    public ResponseEntity<?> getUsers(@RequestParam(required = false, defaultValue = "0") int page,
+                                      @RequestParam(required = false, defaultValue = "10") int size,
+                                      @RequestParam(required = false, defaultValue = "userId") String[] sortParams, //Parametros de ordenacion
+                                      @RequestParam(required = false, defaultValue = "ASC") String sort) // Tipo de ordenacion a usar
+    {
+        return userService.getUsers(page, size, sortParams, sort);
     }
 
     @GetMapping("/{id}")
