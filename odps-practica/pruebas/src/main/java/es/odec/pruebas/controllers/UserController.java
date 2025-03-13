@@ -2,10 +2,16 @@ package es.odec.pruebas.controllers;
 
 import es.odec.pruebas.models.User;
 import es.odec.pruebas.services.UserService;
-import net.kaczmarzyk.spring.data.jpa.domain.In;
+import net.kaczmarzyk.spring.data.jpa.domain.*;
+import net.kaczmarzyk.spring.data.jpa.web.annotation.Conjunction;
+import net.kaczmarzyk.spring.data.jpa.web.annotation.Disjunction;
+import net.kaczmarzyk.spring.data.jpa.web.annotation.Or;
 import net.kaczmarzyk.spring.data.jpa.web.annotation.Spec;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,15 +23,31 @@ public class UserController {
     private UserService userService;
 
     //Coger datos de los usuarios
-    @GetMapping(value = "/list", params = "hasId")
-    public ResponseEntity<?> getUsers(@RequestParam(required = false, defaultValue = "0") int page,
-                                      @RequestParam(required = false, defaultValue = "10") int size,
-                                      @RequestParam(required = false, defaultValue = "userId") String[] sortParams, //Parametros de ordenacion
-                                      @RequestParam(required = false, defaultValue = "ASC") String sort,
-                                      @Spec(path = "userId", params = "hasId", spec = In.class) Specification<User> spec
+    @GetMapping( "/pagedList")
+    public ResponseEntity<?> getPagedUsers
+    (@PageableDefault(page = 0, size = 10, sort = "userId", direction = Sort.Direction.ASC) Pageable pageable,
+                                      @Conjunction({
+                                              @Or({@Spec(path="firstName", params="hasName", spec= EqualIgnoreCase.class),@Spec(path="firstName", params="likeName",spec= LikeIgnoreCase.class)}),
+                                              @Or({@Spec(path="lastName", params="hasLastName", spec= EqualIgnoreCase.class),@Spec(path="lastName", params="likeLastName", spec= LikeIgnoreCase.class)})
+                                      }) Specification<User> spec
     )
     {
-        return userService.getUsers(page, size, sortParams, sort, spec);
+        return userService.getUsers(pageable, spec);
+    }
+
+    @GetMapping("/userCount")
+    public ResponseEntity<?> userCount    (
+                                           @Conjunction({
+                                                   @Or({@Spec(path="firstName", params="hasName", spec= EqualIgnoreCase.class),@Spec(path="firstName", params="likeName",spec= LikeIgnoreCase.class)}),
+                                                   @Or({@Spec(path="lastName", params="hasLastName", spec= EqualIgnoreCase.class),@Spec(path="lastName", params="likeLastName", spec= LikeIgnoreCase.class)})
+                                           }) Specification<User> spec
+    ) {
+        return userService.userCount(spec);
+    }
+
+    @GetMapping("/list")
+    public ResponseEntity<?> getUsers(){
+        return userService.getUsers();
     }
 
     @GetMapping("/{id}")
