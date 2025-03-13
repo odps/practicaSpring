@@ -1,9 +1,11 @@
 package es.odec.pruebas.services;
 
-import es.odec.pruebas.models.Shop;
 import es.odec.pruebas.models.Stock;
 import es.odec.pruebas.repositories.StockRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -14,9 +16,21 @@ public class StockService implements IStockService {
     @Autowired
     StockRepo stockRepo;
 
+    public ResponseEntity<?> getStocksPaged(Pageable pageable, Specification<Stock> spec) {
+        Page<Stock> result = stockRepo.findAll(spec, pageable);
+        if (!result.hasContent()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(result);
+    }
+
     @Override
     public ResponseEntity<List<Stock>> getStocks() {
-        return ResponseEntity.ok().body(stockRepo.findAll());
+        return ResponseEntity.ok(stockRepo.findAll());
+    }
+
+    public ResponseEntity<?> getStockCount(Specification<Stock> spec) {
+        return ResponseEntity.ok(stockRepo.count(spec));
     }
 
     @Override

@@ -1,5 +1,6 @@
 package es.odec.pruebas.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -23,12 +24,13 @@ public class User {
     private String email;
     @Column(name = "username", length = 25, nullable = false)
     private String username;
+    @JsonIgnore
     @Column(name = "user_password", nullable = false)
     private String password;
 
     @ManyToOne
     @JoinColumn(name = "user_role")
-    @JsonIgnoreProperties("users")
+    @JsonIgnoreProperties({"users", "permissions"})
     private Role role;
 
     @CreationTimestamp
