@@ -2,7 +2,10 @@ package es.odec.pruebas.controllers;
 
 import es.odec.pruebas.models.User;
 import es.odec.pruebas.services.UserService;
+import net.kaczmarzyk.spring.data.jpa.domain.In;
+import net.kaczmarzyk.spring.data.jpa.web.annotation.Spec;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,13 +17,15 @@ public class UserController {
     private UserService userService;
 
     //Coger datos de los usuarios
-    @GetMapping("/list")
+    @GetMapping(value = "/list", params = "hasId")
     public ResponseEntity<?> getUsers(@RequestParam(required = false, defaultValue = "0") int page,
                                       @RequestParam(required = false, defaultValue = "10") int size,
                                       @RequestParam(required = false, defaultValue = "userId") String[] sortParams, //Parametros de ordenacion
-                                      @RequestParam(required = false, defaultValue = "ASC") String sort) // Tipo de ordenacion a usar
+                                      @RequestParam(required = false, defaultValue = "ASC") String sort,
+                                      @Spec(path = "userId", params = "hasId", spec = In.class) Specification<User> spec
+    )
     {
-        return userService.getUsers(page, size, sortParams, sort);
+        return userService.getUsers(page, size, sortParams, sort, spec);
     }
 
     @GetMapping("/{id}")

@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -46,14 +47,14 @@ public class UserService implements IUserService {
 //        }
 //    }
 
-    public ResponseEntity<?> getUsers(int page, int size, String[] sortParams, String sort) {
+    public ResponseEntity<?> getUsers(int page, int size, String[] sortParams, String sort, Specification<User> spec) {
         try {
             //Determina direccion del sort (ASC,DESC,REVERSE)
             Sort.Direction sortMethod = Sort.Direction.fromString(sort);
 
             //Ordena los resultados segun el Array de parametros enviados
             Pageable pageable = PageRequest.of(page, size, Sort.by(sortMethod, sortParams));
-            Page<User> result = userRepo.findAll(pageable);
+            Page<User> result = userRepo.findAll(spec, pageable);
 
             return ResponseEntity.ok().body(result);
         } catch (Exception e) {
