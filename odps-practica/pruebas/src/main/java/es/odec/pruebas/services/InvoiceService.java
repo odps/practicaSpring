@@ -1,10 +1,11 @@
 package es.odec.pruebas.services;
 
 import es.odec.pruebas.models.Invoice;
-import es.odec.pruebas.models.Role;
 import es.odec.pruebas.repositories.InvoiceRepo;
-import es.odec.pruebas.repositories.RoleRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -20,11 +21,30 @@ public class InvoiceService implements IInvoiceService {
         return ResponseEntity.ok().body(invoiceRepo.findAll());
     }
 
+    public ResponseEntity<?> getInvoicesPaged(Pageable pageable, Specification<Invoice> spec) {
+        try {
+            Page<Invoice> result = invoiceRepo.findAll(spec, pageable);
+
+            if (!result.hasContent()) {
+                return ResponseEntity.notFound().build();
+            }
+            return ResponseEntity.ok().body(result);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Ha ocurrido un error: " + e.getMessage());
+        }
+    }
+
+    public ResponseEntity<?> invoiceCount(Specification<Invoice> spec) {
+        long result = invoiceRepo.count(spec);
+        return ResponseEntity.ok().body(result);
+    }
+
     @Override
     public ResponseEntity<Invoice> getInvoice(int id) {
         if (invoiceRepo.existsById(id)) {
             return ResponseEntity.ok().body(invoiceRepo.findById(id).get());
-        } else return ResponseEntity.status(404).build();
+        } else
+            return ResponseEntity.status(404).build();
     }
 
     @Override

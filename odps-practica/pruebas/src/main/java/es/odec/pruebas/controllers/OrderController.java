@@ -2,7 +2,18 @@ package es.odec.pruebas.controllers;
 
 import es.odec.pruebas.models.Order;
 import es.odec.pruebas.services.OrderService;
+import net.kaczmarzyk.spring.data.jpa.domain.EqualIgnoreCase;
+import net.kaczmarzyk.spring.data.jpa.domain.GreaterThanOrEqual;
+import net.kaczmarzyk.spring.data.jpa.domain.LessThanOrEqual;
+import net.kaczmarzyk.spring.data.jpa.domain.LikeIgnoreCase;
+import net.kaczmarzyk.spring.data.jpa.web.annotation.Conjunction;
+import net.kaczmarzyk.spring.data.jpa.web.annotation.Or;
+import net.kaczmarzyk.spring.data.jpa.web.annotation.Spec;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,10 +25,35 @@ public class OrderController {
     @Autowired
     private OrderService orderService;
 
-    //Coger datos de las ordenes
+    // Coger datos de las ordenes
     @GetMapping("/list")
     public ResponseEntity<List<Order>> getOrders() {
         return orderService.getOrders();
+    }
+
+    @GetMapping("/pagedList")
+    public ResponseEntity<?> getPagedOrders(
+            @PageableDefault(page = 0, size = 10, sort = "id", direction = Sort.Direction.ASC) Pageable pageable,
+            @Conjunction({
+                    @Or({@Spec(path = "quantity", params = "quantityGreater", spec = GreaterThanOrEqual.class),
+                            @Spec(path = "quantity", params = "quantityLess", spec = LessThanOrEqual.class)}),
+                    @Or({@Spec(path = "product.productName", params = "hasProduct", spec = EqualIgnoreCase.class),
+                            @Spec(path = "product.productName", params = "likeProduct", spec = LikeIgnoreCase.class)}),
+                    @Or({@Spec(path = "shop.shopName", params = "hasShop", spec = EqualIgnoreCase.class),
+                            @Spec(path = "shop.shopName", params = "likeShop", spec = LikeIgnoreCase.class)})
+            }) Specification<Order> spec) {
+        return orderService.getOrdersPaged(pageable, spec);
+    }
+
+    @GetMapping("/orderCount")
+    public ResponseEntity<?> orderCount(
+            @Conjunction({
+                    @Or({@Spec(path = "quantity", params = "quantityGreater", spec = GreaterThanOrEqual.class),
+                            @Spec(path = "quantity", params = "quantityLess", spec = LessThanOrEqual.class)}),
+                    @Or({@Spec(path = "product.productName", params = "hasProduct", spec = EqualIgnoreCase.class),
+                            @Spec(path = "product.productName", params = "likeProduct", spec = LikeIgnoreCase.class)})
+            }) Specification<Order> spec) {
+        return orderService.orderCount(spec);
     }
 
     @GetMapping("/{id}")
@@ -25,19 +61,19 @@ public class OrderController {
         return orderService.getOrder(id);
     }
 
-    //Crear una order
+    // Crear una order
     @PostMapping("/create")
     public ResponseEntity<Order> createOrder(@RequestBody Order order) {
         return orderService.createOrder(order);
     }
 
-    //Editar uan orden
+    // Editar uan orden
     @PutMapping("/edit/{id}")
     public ResponseEntity<Order> updateOrder(@RequestBody Order order, @PathVariable int id) {
         return orderService.updateOrder(order, id);
     }
 
-    //Borrar orden
+    // Borrar orden
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Order> deleteOrder(@PathVariable int id) {
         return orderService.deleteOrder(id);

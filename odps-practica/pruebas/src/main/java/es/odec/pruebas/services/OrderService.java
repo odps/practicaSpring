@@ -1,9 +1,11 @@
 package es.odec.pruebas.services;
 
 import es.odec.pruebas.models.Order;
-import es.odec.pruebas.models.User;
 import es.odec.pruebas.repositories.OrderRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +19,24 @@ public class OrderService implements IOrderService {
     @Override
     public ResponseEntity<List<Order>> getOrders() {
         return ResponseEntity.ok().body(orderRepo.findAll());
+    }
+
+    public ResponseEntity<?> getOrdersPaged(Pageable pageable, Specification<Order> spec) {
+        try {
+            Page<Order> result = orderRepo.findAll(spec, pageable);
+
+            if (!result.hasContent()) {
+                return ResponseEntity.notFound().build();
+            }
+            return ResponseEntity.ok().body(result);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Ha ocurrido un error: " + e.getMessage());
+        }
+    }
+
+    public ResponseEntity<?> orderCount(Specification<Order> spec) {
+        long result = orderRepo.count(spec);
+        return ResponseEntity.ok().body(result);
     }
 
     @Override

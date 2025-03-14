@@ -4,6 +4,9 @@ import es.odec.pruebas.models.Permission;
 import es.odec.pruebas.models.Role;
 import es.odec.pruebas.repositories.RoleRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -15,20 +18,44 @@ public class RoleService implements IRoleService {
     @Autowired
     private RoleRepo roleRepo;
 
-    //Recoger datos de roles
+    // Recoger datos de roles
     @Override
     public ResponseEntity<List<Role>> getRoles() {
-        return ResponseEntity.ok().body(roleRepo.findAll());
+        List<Role> roles = roleRepo.findAll();
+        if (roles.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok().body(roles);
+    }
+
+
+    public ResponseEntity<?> getRolesPaged(Pageable pageable, Specification<Role> spec) {
+        try {
+            Page<Role> result = roleRepo.findAll(spec, pageable);
+
+            if (!result.hasContent()) {
+                return ResponseEntity.notFound().build();
+            }
+            return ResponseEntity.ok().body(result);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Ha ocurrido un error: " + e.getMessage());
+        }
+    }
+
+    public ResponseEntity<?> roleCount(Specification<Role> spec) {
+        long result = roleRepo.count(spec);
+        return ResponseEntity.ok().body(result);
     }
 
     @Override
     public ResponseEntity<Role> getRole(int roleId) {
         if (roleRepo.existsById(roleId)) {
             return ResponseEntity.ok().body(roleRepo.findById(roleId).get());
-        } else return ResponseEntity.status(404).build();
+        } else
+            return ResponseEntity.status(404).build();
     }
 
-    //Crear un rol
+    // Crear un rol
     @Override
     public ResponseEntity<Role> createRole(Role role) {
         return ResponseEntity.ok().body(roleRepo.save(role));
@@ -47,7 +74,7 @@ public class RoleService implements IRoleService {
         return ResponseEntity.ok().body(saved);
     }
 
-    //Eliminar Roles
+    // Eliminar Roles
     @Override
     public ResponseEntity<Void> deleteRole(int id) {
         if (roleRepo.existsById(id)) {
@@ -58,7 +85,7 @@ public class RoleService implements IRoleService {
         }
     }
 
-    //Recuperar permisos de un role
+    // Recuperar permisos de un role
     @Override
     public ResponseEntity<Set<Permission>> getPermissions(int id) {
         if (roleRepo.existsById(id)) {
@@ -69,7 +96,7 @@ public class RoleService implements IRoleService {
         }
     }
 
-    //Agregar permisos
+    // Agregar permisos
     @Override
     public ResponseEntity<Set<Permission>> setPermissions(int id, Set<Permission> permissions) {
         if (roleRepo.existsById(id)) {
@@ -84,18 +111,18 @@ public class RoleService implements IRoleService {
 
 }
 
-//CODIGO DE VICTOR, AGREGAR PERMISOS A LOS ROLES
+// CODIGO DE VICTOR, AGREGAR PERMISOS A LOS ROLES
 
-//public ResponseEntity<Role> update(Role roleOld, int id) {
+// public ResponseEntity<Role> update(Role roleOld, int id) {
 //
-//    if (!roleRepo.existsById(id)) {
-//        return ResponseEntity.badRequest().body(roleRepo.findById(id).get());
-//    }
+// if (!roleRepo.existsById(id)) {
+// return ResponseEntity.badRequest().body(roleRepo.findById(id).get());
+// }
 //
-//    Role roleNew = roleRepo.findById(id).get();
-//    roleNew.setPermissions(roleOld.getPermissions());
-//    roleNew.setRoleName(roleOld.getRoleName());
-//    Role saved = roleRepo.save(roleNew);
-//    return ResponseEntity.ok().body(saved);
+// Role roleNew = roleRepo.findById(id).get();
+// roleNew.setPermissions(roleOld.getPermissions());
+// roleNew.setRoleName(roleOld.getRoleName());
+// Role saved = roleRepo.save(roleNew);
+// return ResponseEntity.ok().body(saved);
 //
-//}
+// }

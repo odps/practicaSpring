@@ -41,45 +41,45 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
-//        http.csrf().disable().cors().disable()
-//                .authorizeRequests().anyRequest().permitAll()
-//                .and().sessionManagement()
-//                .sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().logout().permitAll();
+        http.csrf().disable().cors().disable()
+                .authorizeRequests().anyRequest().permitAll()
+                .and().sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().logout().permitAll();
 
         //Security config oficial, deshabilitado para pruebas
 
-        http.csrf().disable().cors().disable()
-                .authorizeRequests()
-                // Publicos
-                .requestMatchers("/register", "/login").permitAll()
-
-                // Admin .hasAuthority("MANAGE_USERS")
-                .requestMatchers("/user/**", "/role/**", "/permission/**").hasAnyAuthority("CREATE", "DELETE")
-
-                // Shop
-                .requestMatchers("/shop/**").hasAnyAuthority("MANAGE_SHOP", "MANAGE_STOCK")
-
-                // Product
-                .requestMatchers("/product/create", "/product/edit/**", "/product/delete/**")
-                .hasAnyAuthority("CREATE_PRODUCT", "UPDATE_PRODUCT", "DELETE_PRODUCT")
-                .requestMatchers("/product/list", "/product/**").authenticated()
-
-                // Stock
-                .requestMatchers("/stock/**").hasAuthority("MANAGE_STOCK")
-
-                // Order
-                .requestMatchers("/order/create").hasAuthority("PLACE_ORDER")
-                .requestMatchers("/order/**").hasAnyAuthority("VIEW_ORDERS")
-
-                // Invoice
-                .requestMatchers("/invoice/**").authenticated()
-
-                //Hello para pruebas
-                .requestMatchers("/hello").authenticated()
-
-                .anyRequest().authenticated()
-                .and().sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().logout().permitAll();
+//        http.csrf().disable().cors().disable()
+//                .authorizeRequests()
+//                // Publicos
+//                .requestMatchers("/register", "/login").permitAll()
+//
+//                // Admin .hasAuthority("MANAGE_USERS")
+//                .requestMatchers("/user/**", "/role/**", "/permission/**").hasAnyAuthority("CREATE", "DELETE", "UPDATE")
+//
+//                // Shop
+//                .requestMatchers("/shop/**").hasAnyAuthority("CREATE")
+//
+//                // Product
+//                .requestMatchers("/product/create", "/product/edit/**", "/product/delete/**")
+//                .hasAnyAuthority("CREATE")
+//                .requestMatchers("/product/list").hasAuthority("CREATE")
+//
+//                // Stock
+//                .requestMatchers("/stock/**").hasAuthority("CREATE")
+//
+//                // Order
+//                .requestMatchers("/order/create").hasAuthority("CREATE")
+//                .requestMatchers("/order/**").hasAnyAuthority("CREATE")
+//
+//                // Invoice
+//                .requestMatchers("/invoice/**").authenticated()
+//
+//                //Hello para pruebas
+//                .requestMatchers("/hello").authenticated()
+//
+//                .anyRequest().authenticated()
+//                .and().sessionManagement()
+//                .sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().logout().permitAll();
 
         http.addFilterBefore(jwtRequestFilter(), UsernamePasswordAuthenticationFilter.class);
 

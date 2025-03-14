@@ -1,6 +1,7 @@
 package es.odec.pruebas.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 
 import java.util.HashSet;
@@ -27,6 +28,7 @@ public class Role {
     private Set<Permission> permissions = new HashSet<>();
 
     @OneToMany(mappedBy = "role", fetch = FetchType.EAGER)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private Set<User> users;
 
 

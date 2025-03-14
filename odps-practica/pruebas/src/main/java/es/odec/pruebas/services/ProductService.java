@@ -3,6 +3,9 @@ package es.odec.pruebas.services;
 import es.odec.pruebas.models.Product;
 import es.odec.pruebas.repositories.ProductRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -14,10 +17,28 @@ public class ProductService implements IProductService {
     @Autowired
     ProductRepo productRepo;
 
-    //Recoger datos de productos
+    // Recoger datos de productos
     @Override
     public ResponseEntity<List<Product>> getProducts() {
         return ResponseEntity.ok().body(productRepo.findAll());
+    }
+
+    public ResponseEntity<?> getProductsPaged(Pageable pageable, Specification<Product> spec) {
+        try {
+            Page<Product> result = productRepo.findAll(spec, pageable);
+
+            if (!result.hasContent()) {
+                return ResponseEntity.notFound().build();
+            }
+            return ResponseEntity.ok().body(result);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Ha ocurrido un error: " + e.getMessage());
+        }
+    }
+
+    public ResponseEntity<?> productCount(Specification<Product> spec) {
+        long result = productRepo.count(spec);
+        return ResponseEntity.ok().body(result);
     }
 
     @Override
@@ -30,7 +51,8 @@ public class ProductService implements IProductService {
     public ResponseEntity<Product> save(Product product) {
         if (product != null) {
             return ResponseEntity.ok().body(productRepo.save(product));
-        } else return ResponseEntity.notFound().build();
+        } else
+            return ResponseEntity.notFound().build();
 
     }
 
@@ -58,15 +80,14 @@ public class ProductService implements IProductService {
 
             return ResponseEntity.ok().body(productRepo.save(editable));
 
-        } else return ResponseEntity.notFound().build();
+        } else
+            return ResponseEntity.notFound().build();
     }
 
-
-    //Eliminar productos
+    // Eliminar productos
     @Override
     public void delete(int id) {
         productRepo.deleteById(id);
     }
-
 
 }

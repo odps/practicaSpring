@@ -21,25 +21,37 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    //Coger datos de los usuarios
+    // Coger datos de los usuarios
     @GetMapping("/pagedList")
-    public ResponseEntity<?> getPagedUsers
-    (@PageableDefault(page = 0, size = 10, sort = "userId", direction = Sort.Direction.ASC) Pageable pageable,
-     @Conjunction({
-             @Or({@Spec(path = "firstName", params = "hasName", spec = EqualIgnoreCase.class), @Spec(path = "firstName", params = "likeName", spec = LikeIgnoreCase.class)}),
-             @Or({@Spec(path = "lastName", params = "hasLastName", spec = EqualIgnoreCase.class), @Spec(path = "lastName", params = "likeLastName", spec = LikeIgnoreCase.class)})
-     }) Specification<User> spec
-    ) {
+    public ResponseEntity<?> getPagedUsers(
+            @PageableDefault(page = 0, size = 10, sort = "userId", direction = Sort.Direction.ASC) Pageable pageable,
+            // @Conjunction({
+            // @Or({@Spec(path = "firstName", params = "hasName", spec =
+            // EqualIgnoreCase.class), @Spec(path = "firstName", params = "likeName", spec =
+            // LikeIgnoreCase.class)}),
+            // @Or({@Spec(path = "lastName", params = "hasLastName", spec =
+            // EqualIgnoreCase.class), @Spec(path = "lastName", params = "likeLastName",
+            // spec = LikeIgnoreCase.class)})
+            // }) Specification<User> spec
+            @Conjunction({
+                    @Or({ @Spec(path = "firstName", params = "hasName", spec = EqualIgnoreCase.class),
+                            @Spec(path = "firstName", params = "likeName", spec = LikeIgnoreCase.class) }),
+                    @Or({ @Spec(path = "lastName", params = "hasLastName", spec = EqualIgnoreCase.class),
+                            @Spec(path = "lastName", params = "likeLastName", spec = LikeIgnoreCase.class) }),
+                    @Or({ @Spec(path = "email", params = "hasEmail", spec = EqualIgnoreCase.class),
+                            @Spec(path = "email", params = "likeEmail", spec = LikeIgnoreCase.class) })
+            }) Specification<User> spec) {
         return userService.getUsers(pageable, spec);
     }
 
     @GetMapping("/userCount")
     public ResponseEntity<?> userCount(
             @Conjunction({
-                    @Or({@Spec(path = "firstName", params = "hasName", spec = EqualIgnoreCase.class), @Spec(path = "firstName", params = "likeName", spec = LikeIgnoreCase.class)}),
-                    @Or({@Spec(path = "lastName", params = "hasLastName", spec = EqualIgnoreCase.class), @Spec(path = "lastName", params = "likeLastName", spec = LikeIgnoreCase.class)})
-            }) Specification<User> spec
-    ) {
+                    @Or({ @Spec(path = "firstName", params = "hasName", spec = EqualIgnoreCase.class),
+                            @Spec(path = "firstName", params = "likeName", spec = LikeIgnoreCase.class) }),
+                    @Or({ @Spec(path = "lastName", params = "hasLastName", spec = EqualIgnoreCase.class),
+                            @Spec(path = "lastName", params = "likeLastName", spec = LikeIgnoreCase.class) })
+            }) Specification<User> spec) {
         return userService.userCount(spec);
     }
 
@@ -53,19 +65,19 @@ public class UserController {
         return userService.getUser(id);
     }
 
-    //Crear un usuario
+    // Crear un usuario
     @PostMapping("/create")
     public ResponseEntity<User> createUser(@RequestBody User user) {
         return userService.createUser(user);
     }
 
-    //Editar un usuario
+    // Editar un usuario
     @PutMapping("/edit/{id}")
     public ResponseEntity<User> updateUser(@RequestBody User user, @PathVariable int id) {
         return userService.updateUser(user, id);
     }
 
-    //Eliminar un usuario
+    // Eliminar un usuario
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<User> deleteUser(@PathVariable int id) {
         return userService.deleteUser(id);

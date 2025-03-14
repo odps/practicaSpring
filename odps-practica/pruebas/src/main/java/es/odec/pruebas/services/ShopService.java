@@ -3,6 +3,9 @@ package es.odec.pruebas.services;
 import es.odec.pruebas.models.Shop;
 import es.odec.pruebas.repositories.ShopRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +19,24 @@ public class ShopService implements IShopService {
     @Override
     public ResponseEntity<List<Shop>> getShops() {
         return ResponseEntity.ok(shopRepo.findAll());
+    }
+
+    public ResponseEntity<?> getShopsPaged(Pageable pageable, Specification<Shop> spec) {
+        try {
+            Page<Shop> result = shopRepo.findAll(spec, pageable);
+
+            if (!result.hasContent()) {
+                return ResponseEntity.notFound().build();
+            }
+            return ResponseEntity.ok().body(result);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Ha ocurrido un error: " + e.getMessage());
+        }
+    }
+
+    public ResponseEntity<?> shopCount(Specification<Shop> spec) {
+        long result = shopRepo.count(spec);
+        return ResponseEntity.ok().body(result);
     }
 
     @Override
