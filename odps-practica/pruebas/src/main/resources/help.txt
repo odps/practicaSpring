@@ -1,0 +1,140 @@
+Using PL/SQL Packages from Your Spring Boot Application
+You can access your Oracle PL/SQL packages from your Spring Boot application using either Spring JDBC templates or JPA with native queries. Here's how to implement this:
+
+Option 1: Using JdbcTemplate
+
+package es.odec.pruebas.services;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.SqlOutParameter;
+import org.springframework.jdbc.core.SqlParameter;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
+import org.springframework.jdbc.core.simple.SimpleJdbcCall;
+import org.springframework.stereotype.Service;
+
+import java.sql.Types;
+import java.util.Map;
+
+@Service
+public class OraclePackageService {
+
+    private final JdbcTemplate jdbcTemplate;
+    
+    @Autowired
+    public OraclePackageService(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
+    
+    // Call a procedure from your package
+    public void callProcedureExample(int paramId, String paramName) {
+        SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate)
+                .withCatalogName("YOUR_PACKAGE_NAME") // Package name
+                .withProcedureName("YOUR_PROCEDURE_NAME"); // Procedure name
+                
+        SqlParameterSource params = new MapSqlParameterSource()
+                .addValue("param_id", paramId)
+                .addValue("param_name", paramName);
+                
+        jdbcCall.execute(params);
+    }
+    
+    // Call a function that returns a value from your package
+    public String callFunctionExample(int paramId) {
+        SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate)
+                .withCatalogName("YOUR_PACKAGE_NAME") // Package name
+                .withFunctionName("YOUR_FUNCTION_NAME") // Function name
+                .declareParameters(
+                        new SqlParameter("param_id", Types.INTEGER),
+                        new SqlOutParameter("RETURN_VALUE", Types.VARCHAR)
+                );
+                
+        SqlParameterSource params = new MapSqlParameterSource()
+                .addValue("param_id", paramId);
+                
+        Map<String, Object> result = jdbcCall.execute(params);
+        return (String) result.get("RETURN_VALUE");
+    }
+}
+
+-------------------
+
+Option 2: Using JPA with Native Queries
+
+package es.odec.pruebas.repositories;
+
+import es.odec.pruebas.models.Product;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+@Repository
+public interface ProductRepo extends JpaRepository<Product, Integer>, JpaSpecificationExecutor<Product> {
+    
+    // Call a function from your package that returns a single value
+    @Query(value = "SELECT YOUR_PACKAGE_NAME.YOUR_FUNCTION_NAME(:productId) FROM dual", nativeQuery = true)
+    String callCustomFunction(@Param("productId") int productId);
+    
+    // Call a function that returns a cursor which you want to map to entities
+    @Query(value = "SELECT * FROM TABLE(YOUR_PACKAGE_NAME.GET_PRODUCTS_FUNCTION(:category))", nativeQuery = true)
+    List<Product> getProductsByCategory(@Param("category") String category);
+    
+    // To execute a procedure, you can use the @Modifying annotation
+    @Modifying
+    @Query(value = "BEGIN YOUR_PACKAGE_NAME.YOUR_PROCEDURE_NAME(:param1, :param2); END;", nativeQuery = true)
+    void executePackageProcedure(@Param("param1") int param1, @Param("param2") String param2);
+}
+
+-------------------------
+
+Option 3: Using StoredProcedureQuery for Complex Cases
+For more complex scenarios, you can use the EntityManager with StoredProcedureQuery:
+
+package es.odec.pruebas.services;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.ParameterMode;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.StoredProcedureQuery;
+
+@Service
+public class ComplexOracleService {
+
+    @PersistenceContext
+    private EntityManager entityManager;
+    
+    @Transactional
+    public Object callComplexPackageProcedure(int id, String name) {
+        StoredProcedureQuery query = entityManager.createStoredProcedureQuery("YOUR_PACKAGE_NAME.YOUR_PROCEDURE_NAME");
+        
+        // Register parameters
+        query.registerStoredProcedureParameter("p_id", Integer.class, ParameterMode.IN);
+        query.registerStoredProcedureParameter("p_name", String.class, ParameterMode.IN);
+        query.registerStoredProcedureParameter("p_result", String.class, ParameterMode.OUT);
+        
+        // Set parameter values
+        query.setParameter("p_id", id);
+        query.setParameter("p_name", name);
+        
+        // Execute and get result
+        query.execute();
+        return query.getOutputParameterValue("p_result");
+    }
+}
+
+----------------------
+
+Implementation Steps
+Ensure your Oracle JDBC driver is correctly configured in your pom.xml (which is already done)
+Create a service class to interact with your PL/SQL package
+Inject either JdbcTemplate or EntityManager, depending on your approach
+Create methods that call the package functions/procedures
+Use the service in your controllers or other services as needed
+Remember to use the exact package names, procedure names, and parameter names as defined in your Oracle database.
