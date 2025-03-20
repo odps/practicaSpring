@@ -1,140 +1,72 @@
-Using PL/SQL Packages from Your Spring Boot Application
-You can access your Oracle PL/SQL packages from your Spring Boot application using either Spring JDBC templates or JPA with native queries. Here's how to implement this:
+  CREATE OR REPLACE TYPE user_type IS OBJECT (
+    user_pk NUMBER,
+    created_at DATE,
+    user_email VARCHAR2(50),
+    user_firstname VARCHAR2(50),
+    user_lastname VARCHAR2(50),
+    user_password VARCHAR2(100),
+    modified_at DATE,
+    username VARCHAR2(25),
+    user_role NUMBER
+  );
+  /
+CREATE OR REPLACE TYPE user_table_type AS TABLE OF user_type;
+/
 
-Option 1: Using JdbcTemplate
 
-package es.odec.pruebas.services;
+CREATE OR REPLACE PACKAGE OP_PAQUETE AS
+    FUNCTION objetousuario(p_id NUMBER) RETURN user_table_type;
+END OP_PAQUETE;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.SqlOutParameter;
-import org.springframework.jdbc.core.SqlParameter;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
-import org.springframework.jdbc.core.namedparam.SqlParameterSource;
-import org.springframework.jdbc.core.simple.SimpleJdbcCall;
-import org.springframework.stereotype.Service;
 
-import java.sql.Types;
-import java.util.Map;
+CREATE OR REPLACE PACKAGE BODY OP_PAQUETE AS
+    FUNCTION objetousuario(p_id IN NUMBER) RETURN user_table_type AS
+        v_result user_table_type := user_table_type();
+    BEGIN
+        v_result.extend;
+        SELECT user_type(
+            u.user_pk, u.created_at, u.user_email, u.user_firstname,
+            u.user_lastname, u.user_password, u.modified_at, u.username, u.user_role
+        ) INTO v_result(1)
+        FROM op_users u
+        WHERE u.user_pk = p_id;
 
-@Service
-public class OraclePackageService {
+        RETURN v_result;
+    END objetousuario;
+END OP_PAQUETE;
 
-    private final JdbcTemplate jdbcTemplate;
-    
-    @Autowired
-    public OraclePackageService(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
-    
-    // Call a procedure from your package
-    public void callProcedureExample(int paramId, String paramName) {
-        SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate)
-                .withCatalogName("YOUR_PACKAGE_NAME") // Package name
-                .withProcedureName("YOUR_PROCEDURE_NAME"); // Procedure name
-                
-        SqlParameterSource params = new MapSqlParameterSource()
-                .addValue("param_id", paramId)
-                .addValue("param_name", paramName);
-                
-        jdbcCall.execute(params);
-    }
-    
-    // Call a function that returns a value from your package
-    public String callFunctionExample(int paramId) {
-        SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate)
-                .withCatalogName("YOUR_PACKAGE_NAME") // Package name
-                .withFunctionName("YOUR_FUNCTION_NAME") // Function name
-                .declareParameters(
-                        new SqlParameter("param_id", Types.INTEGER),
-                        new SqlOutParameter("RETURN_VALUE", Types.VARCHAR)
-                );
-                
-        SqlParameterSource params = new MapSqlParameterSource()
-                .addValue("param_id", paramId);
-                
-        Map<String, Object> result = jdbcCall.execute(params);
-        return (String) result.get("RETURN_VALUE");
-    }
-}
 
 -------------------
 
-Option 2: Using JPA with Native Queries
+create or replace PACKAGE OP_PAQUETE2 AS
 
-package es.odec.pruebas.repositories;
+    FUNCTION returnString RETURN VARCHAR2;
+    FUNCTION objetousuario(p_id NUMBER) RETURN op_user_table_type;
 
-import es.odec.pruebas.models.Product;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
-import org.springframework.stereotype.Repository;
+END OP_PAQUETE2;
 
-import java.util.List;
 
-@Repository
-public interface ProductRepo extends JpaRepository<Product, Integer>, JpaSpecificationExecutor<Product> {
-    
-    // Call a function from your package that returns a single value
-    @Query(value = "SELECT YOUR_PACKAGE_NAME.YOUR_FUNCTION_NAME(:productId) FROM dual", nativeQuery = true)
-    String callCustomFunction(@Param("productId") int productId);
-    
-    // Call a function that returns a cursor which you want to map to entities
-    @Query(value = "SELECT * FROM TABLE(YOUR_PACKAGE_NAME.GET_PRODUCTS_FUNCTION(:category))", nativeQuery = true)
-    List<Product> getProductsByCategory(@Param("category") String category);
-    
-    // To execute a procedure, you can use the @Modifying annotation
-    @Modifying
-    @Query(value = "BEGIN YOUR_PACKAGE_NAME.YOUR_PROCEDURE_NAME(:param1, :param2); END;", nativeQuery = true)
-    void executePackageProcedure(@Param("param1") int param1, @Param("param2") String param2);
-}
+create or replace PACKAGE BODY OP_PAQUETE2 AS
 
--------------------------
+    FUNCTION returnString RETURN VARCHAR2 AS
+    v_result VARCHAR2(20);
+    BEGIN
+        v_result := 'Hola como estas';
+        return v_result;
+    END returnString;
 
-Option 3: Using StoredProcedureQuery for Complex Cases
-For more complex scenarios, you can use the EntityManager with StoredProcedureQuery:
+        FUNCTION objetousuario(p_id IN NUMBER) RETURN op_user_table_type AS
+        v_result op_user_table_type := op_user_table_type();
+    BEGIN
+        v_result.extend;
+        SELECT op_user_type(
+            u.user_pk, u.created_at, u.user_email, u.user_firstname,
+            u.user_lastname, u.user_password, u.modified_at, u.username, u.user_role
+        ) INTO v_result(1)
+        FROM op_users u
+        WHERE u.user_pk = p_id;
 
-package es.odec.pruebas.services;
+        RETURN v_result;
+    END objetousuario;
 
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.ParameterMode;
-import jakarta.persistence.PersistenceContext;
-import jakarta.persistence.StoredProcedureQuery;
-
-@Service
-public class ComplexOracleService {
-
-    @PersistenceContext
-    private EntityManager entityManager;
-    
-    @Transactional
-    public Object callComplexPackageProcedure(int id, String name) {
-        StoredProcedureQuery query = entityManager.createStoredProcedureQuery("YOUR_PACKAGE_NAME.YOUR_PROCEDURE_NAME");
-        
-        // Register parameters
-        query.registerStoredProcedureParameter("p_id", Integer.class, ParameterMode.IN);
-        query.registerStoredProcedureParameter("p_name", String.class, ParameterMode.IN);
-        query.registerStoredProcedureParameter("p_result", String.class, ParameterMode.OUT);
-        
-        // Set parameter values
-        query.setParameter("p_id", id);
-        query.setParameter("p_name", name);
-        
-        // Execute and get result
-        query.execute();
-        return query.getOutputParameterValue("p_result");
-    }
-}
-
-----------------------
-
-Implementation Steps
-Ensure your Oracle JDBC driver is correctly configured in your pom.xml (which is already done)
-Create a service class to interact with your PL/SQL package
-Inject either JdbcTemplate or EntityManager, depending on your approach
-Create methods that call the package functions/procedures
-Use the service in your controllers or other services as needed
-Remember to use the exact package names, procedure names, and parameter names as defined in your Oracle database.
+END OP_PAQUETE2;

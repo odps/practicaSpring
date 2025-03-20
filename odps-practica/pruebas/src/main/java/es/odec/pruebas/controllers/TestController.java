@@ -19,7 +19,8 @@ public class TestController {
     @GetMapping("/userid/{id}")
     ResponseEntity<?> getUserById(@PathVariable int id) {
         User user = userRepo.findUserByIdQuery(id);
-        System.out.println(user.toString());
         return ResponseEntity.ok(user);
     }
+
+
 }

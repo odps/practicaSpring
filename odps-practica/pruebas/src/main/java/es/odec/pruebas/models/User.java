@@ -30,7 +30,7 @@ public class User {
 
     @ManyToOne
     @JoinColumn(name = "user_role")
-    @JsonIgnoreProperties({"users", "permissions"})
+    @JsonIgnoreProperties({ "users", "permissions" })
     private Role role;
 
     @CreationTimestamp
