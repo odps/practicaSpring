@@ -15,11 +15,14 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@EnableMethodSecurity(prePostEnabled = true)
 @RequestMapping("/order")
 public class OrderController {
     @Autowired
@@ -27,11 +30,13 @@ public class OrderController {
 
     // Coger datos de las ordenes
     @GetMapping("/list")
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
     public ResponseEntity<List<Order>> getOrders() {
         return orderService.getOrders();
     }
 
     @GetMapping("/pagedList")
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
     public ResponseEntity<?> getPagedOrders(
             @PageableDefault(page = 0, size = 10, sort = "id", direction = Sort.Direction.ASC) Pageable pageable,
             @Conjunction({
@@ -46,6 +51,7 @@ public class OrderController {
     }
 
     @GetMapping("/orderCount")
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
     public ResponseEntity<?> orderCount(
             @Conjunction({
                     @Or({@Spec(path = "quantity", params = "quantityGreater", spec = GreaterThanOrEqual.class),
@@ -57,24 +63,28 @@ public class OrderController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
     public ResponseEntity<Order> getOrder(@PathVariable int id) {
         return orderService.getOrder(id);
     }
 
     // Crear una order
     @PostMapping("/create")
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
     public ResponseEntity<Order> createOrder(@RequestBody Order order) {
         return orderService.createOrder(order);
     }
 
     // Editar uan orden
     @PutMapping("/edit/{id}")
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
     public ResponseEntity<Order> updateOrder(@RequestBody Order order, @PathVariable int id) {
         return orderService.updateOrder(order, id);
     }
 
     // Borrar orden
     @DeleteMapping("/delete/{id}")
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
     public ResponseEntity<Order> deleteOrder(@PathVariable int id) {
         return orderService.deleteOrder(id);
     }

@@ -3,10 +3,8 @@ package es.odec.pruebas.services;
 import es.odec.pruebas.models.Product;
 import org.springframework.http.ResponseEntity;
 
-import java.util.List;
-
 public interface IProductService {
-    public ResponseEntity<List<Product>> getProducts();
+    public ResponseEntity<?> getProducts();
 
     public ResponseEntity<Product> getProductById(int productId);
 

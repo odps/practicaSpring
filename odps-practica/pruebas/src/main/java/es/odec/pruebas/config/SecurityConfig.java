@@ -39,55 +39,55 @@ public class SecurityConfig {
     }
 
     @Bean
+    public JwtRequestFilter jwtRequestFilter() {
+        return new JwtRequestFilter(jwtUtil, customUserDetailsService);
+    }
+
+    @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
-        http.csrf().disable().cors().disable()
-                .authorizeRequests().anyRequest().permitAll()
-                .and().sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().logout().permitAll();
+//        http.csrf().disable().cors().disable()
+//                .authorizeRequests().anyRequest().permitAll()
+//                .and().sessionManagement()
+//                .sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().logout().permitAll();
 
         //Security config oficial, deshabilitado para pruebas
 
-//        http.csrf().disable().cors().disable()
-//                .authorizeRequests()
-//                // Publicos
-//                .requestMatchers("/register", "/login").permitAll()
+        http.csrf().disable().cors().disable()
+                .authorizeRequests()
+                // Publicos
+                .requestMatchers("/register", "/login").anonymous()
 //
 //                // Admin .hasAuthority("MANAGE_USERS")
-//                .requestMatchers("/user/**", "/role/**", "/permission/**").hasAnyAuthority("CREATE", "DELETE", "UPDATE")
+////                .requestMatchers("/user/**", "/role/**", "/permission/**").hasAnyAuthority("CREATE", "DELETE", "UPDATE", "ADMIN")
 //
 //                // Shop
-//                .requestMatchers("/shop/**").hasAnyAuthority("CREATE")
+////                .requestMatchers("/shop/**").hasAnyAuthority("CREATE")
 //
 //                // Product
-//                .requestMatchers("/product/create", "/product/edit/**", "/product/delete/**")
-//                .hasAnyAuthority("CREATE")
-//                .requestMatchers("/product/list").hasAuthority("CREATE")
+////                .requestMatchers("/product/create", "/product/edit/**", "/product/delete/**")
+////                .hasAnyAuthority("CREATE")
+////                .requestMatchers("/product/list").hasAuthority("CREATE")
 //
 //                // Stock
-//                .requestMatchers("/stock/**").hasAuthority("CREATE")
+////                .requestMatchers("/stock/**").hasAuthority("CREATE")
 //
 //                // Order
-//                .requestMatchers("/order/create").hasAuthority("CREATE")
-//                .requestMatchers("/order/**").hasAnyAuthority("CREATE")
+////                .requestMatchers("/order/create").hasAuthority("CREATE")
+////                .requestMatchers("/order/**").hasAnyAuthority("CREATE")
 //
 //                // Invoice
-//                .requestMatchers("/invoice/**").authenticated()
+////                .requestMatchers("/invoice/**").authenticated()
 //
 //                //Hello para pruebas
-//                .requestMatchers("/hello").authenticated()
+////                .requestMatchers("/hello").authenticated()
 //
-//                .anyRequest().authenticated()
-//                .and().sessionManagement()
-//                .sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().logout().permitAll();
+                .anyRequest().authenticated()
+                .and().sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().logout().permitAll();
 
         http.addFilterBefore(jwtRequestFilter(), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
-    }
-
-    @Bean
-    public JwtRequestFilter jwtRequestFilter() {
-        return new JwtRequestFilter(jwtUtil, customUserDetailsService);
     }
 }

@@ -13,9 +13,12 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@EnableMethodSecurity(prePostEnabled = true)
 @RequestMapping("/user")
 public class UserController {
     @Autowired
@@ -23,44 +26,40 @@ public class UserController {
 
     // Coger datos de los usuarios
     @GetMapping("/pagedList")
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
     public ResponseEntity<?> getPagedUsers(
             @PageableDefault(page = 0, size = 10, sort = "userId", direction = Sort.Direction.ASC) Pageable pageable,
-            // @Conjunction({
-            // @Or({@Spec(path = "firstName", params = "hasName", spec =
-            // EqualIgnoreCase.class), @Spec(path = "firstName", params = "likeName", spec =
-            // LikeIgnoreCase.class)}),
-            // @Or({@Spec(path = "lastName", params = "hasLastName", spec =
-            // EqualIgnoreCase.class), @Spec(path = "lastName", params = "likeLastName",
-            // spec = LikeIgnoreCase.class)})
-            // }) Specification<User> spec
             @Conjunction({
-                    @Or({ @Spec(path = "firstName", params = "hasName", spec = EqualIgnoreCase.class),
-                            @Spec(path = "firstName", params = "likeName", spec = LikeIgnoreCase.class) }),
-                    @Or({ @Spec(path = "lastName", params = "hasLastName", spec = EqualIgnoreCase.class),
-                            @Spec(path = "lastName", params = "likeLastName", spec = LikeIgnoreCase.class) }),
-                    @Or({ @Spec(path = "email", params = "hasEmail", spec = EqualIgnoreCase.class),
-                            @Spec(path = "email", params = "likeEmail", spec = LikeIgnoreCase.class) })
+                    @Or({@Spec(path = "firstName", params = "hasName", spec = EqualIgnoreCase.class),
+                            @Spec(path = "firstName", params = "likeName", spec = LikeIgnoreCase.class)}),
+                    @Or({@Spec(path = "lastName", params = "hasLastName", spec = EqualIgnoreCase.class),
+                            @Spec(path = "lastName", params = "likeLastName", spec = LikeIgnoreCase.class)}),
+                    @Or({@Spec(path = "email", params = "hasEmail", spec = EqualIgnoreCase.class),
+                            @Spec(path = "email", params = "likeEmail", spec = LikeIgnoreCase.class)})
             }) Specification<User> spec) {
         return userService.getUsers(pageable, spec);
     }
 
     @GetMapping("/userCount")
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
     public ResponseEntity<?> userCount(
             @Conjunction({
-                    @Or({ @Spec(path = "firstName", params = "hasName", spec = EqualIgnoreCase.class),
-                            @Spec(path = "firstName", params = "likeName", spec = LikeIgnoreCase.class) }),
-                    @Or({ @Spec(path = "lastName", params = "hasLastName", spec = EqualIgnoreCase.class),
-                            @Spec(path = "lastName", params = "likeLastName", spec = LikeIgnoreCase.class) })
+                    @Or({@Spec(path = "firstName", params = "hasName", spec = EqualIgnoreCase.class),
+                            @Spec(path = "firstName", params = "likeName", spec = LikeIgnoreCase.class)}),
+                    @Or({@Spec(path = "lastName", params = "hasLastName", spec = EqualIgnoreCase.class),
+                            @Spec(path = "lastName", params = "likeLastName", spec = LikeIgnoreCase.class)})
             }) Specification<User> spec) {
         return userService.userCount(spec);
     }
 
     @GetMapping("/list")
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
     public ResponseEntity<?> getUsers() {
         return userService.getUsers();
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
     public ResponseEntity<User> getUser(@PathVariable int id) {
         return userService.getUser(id);
     }
@@ -73,12 +72,14 @@ public class UserController {
 
     // Editar un usuario
     @PutMapping("/edit/{id}")
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
     public ResponseEntity<User> updateUser(@RequestBody User user, @PathVariable int id) {
         return userService.updateUser(user, id);
     }
 
     // Eliminar un usuario
     @DeleteMapping("/delete/{id}")
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
     public ResponseEntity<User> deleteUser(@PathVariable int id) {
         return userService.deleteUser(id);
     }

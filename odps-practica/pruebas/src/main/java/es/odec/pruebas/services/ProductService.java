@@ -9,8 +9,6 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 @Service
 public class ProductService implements IProductService {
 
@@ -19,7 +17,7 @@ public class ProductService implements IProductService {
 
     // Recoger datos de productos
     @Override
-    public ResponseEntity<List<Product>> getProducts() {
+    public ResponseEntity<?> getProducts() {
         return ResponseEntity.ok().body(productRepo.findAll());
     }
 

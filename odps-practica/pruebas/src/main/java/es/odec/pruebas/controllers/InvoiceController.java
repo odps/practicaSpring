@@ -15,11 +15,14 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@EnableMethodSecurity(prePostEnabled = true)
 @RequestMapping("/invoice")
 public class InvoiceController {
     @Autowired
@@ -27,11 +30,13 @@ public class InvoiceController {
 
     // Recoger datos de invoice
     @GetMapping("/list")
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
     public ResponseEntity<List<Invoice>> getInvoices() {
         return invoiceService.getInvoices();
     }
 
     @GetMapping("/pagedList")
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
     public ResponseEntity<?> getPagedInvoices(
             @PageableDefault(page = 0, size = 10, sort = "invoicePk", direction = Sort.Direction.ASC) Pageable pageable,
             @Conjunction({
@@ -48,6 +53,7 @@ public class InvoiceController {
     }
 
     @GetMapping("/invoiceCount")
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
     public ResponseEntity<?> invoiceCount(
             @Conjunction({
                     @Or({@Spec(path = "invoiceTotal", params = "totalGreater", spec = GreaterThanOrEqual.class),
@@ -59,24 +65,28 @@ public class InvoiceController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
     public ResponseEntity<Invoice> getInvoice(@PathVariable int id) {
         return invoiceService.getInvoice(id);
     }
 
     // Crear un nuevo invoice
     @PostMapping("/create")
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
     public ResponseEntity<Invoice> createInvoice(@RequestBody Invoice invoice) {
         return invoiceService.createInvoice(invoice);
     }
 
     // Actualizar un invoice
     @PutMapping("/edit/{id}")
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
     public ResponseEntity<Invoice> updateInvoice(@RequestBody Invoice invoice, @PathVariable int id) {
         return invoiceService.updateInvoice(invoice, id);
     }
 
     // Borrar un invoice
     @DeleteMapping("/delete/{id}")
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
     public ResponseEntity<Invoice> deleteInvoice(@PathVariable int id) {
         return invoiceService.deleteInvoice(id);
     }

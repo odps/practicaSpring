@@ -13,11 +13,14 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@EnableMethodSecurity(prePostEnabled = true)
 @RequestMapping("/shop")
 public class ShopController {
     @Autowired
@@ -25,11 +28,13 @@ public class ShopController {
 
     // Coger datos de las tiendas
     @GetMapping("/list")
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
     public ResponseEntity<List<Shop>> getShops() {
         return shopService.getShops();
     }
 
     @GetMapping("/pagedList")
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
     public ResponseEntity<?> getPagedShops(
             @PageableDefault(page = 0, size = 10, sort = "shopId", direction = Sort.Direction.ASC) Pageable pageable,
             @Conjunction({
@@ -44,6 +49,7 @@ public class ShopController {
     }
 
     @GetMapping("/shopCount")
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
     public ResponseEntity<?> shopCount(
             @Conjunction({
                     @Or({@Spec(path = "shopName", params = "hasName", spec = EqualIgnoreCase.class),
@@ -55,24 +61,28 @@ public class ShopController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
     public ResponseEntity<Shop> getShop(@PathVariable int id) {
         return shopService.getShop(id);
     }
 
     // Crear una tienda
     @PostMapping("/create")
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
     public ResponseEntity<Shop> createShop(@RequestBody Shop shop) {
         return shopService.createShop(shop);
     }
 
     // Editar una tienda
     @PutMapping("/edit/{id}")
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
     public ResponseEntity<Shop> updateShop(@RequestBody Shop shop, @PathVariable int id) {
         return shopService.updateShop(shop, id);
     }
 
     // Eliminar una tienda
     @DeleteMapping("/delete/{id}")
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
     public ResponseEntity<Shop> deleteShop(@PathVariable int id) {
         return shopService.deleteShop(id);
     }

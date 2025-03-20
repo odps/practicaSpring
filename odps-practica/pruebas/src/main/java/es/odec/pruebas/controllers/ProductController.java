@@ -15,11 +15,13 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @RestController
+@EnableMethodSecurity(prePostEnabled = true)
 @RequestMapping("/product")
 public class ProductController {
 
@@ -28,11 +30,14 @@ public class ProductController {
 
     // Rutas para obtener productos
     @GetMapping("/list")
-    public ResponseEntity<List<Product>> productList() {
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
+    public ResponseEntity<?> productList() {
+        System.out.println("Entrada a controlador lista");
         return productService.getProducts();
     }
 
     @GetMapping("/pagedList")
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
     public ResponseEntity<?> getPagedProducts(
             @PageableDefault(page = 0, size = 10, sort = "productId", direction = Sort.Direction.ASC) Pageable pageable,
             @Conjunction({
@@ -47,6 +52,7 @@ public class ProductController {
     }
 
     @GetMapping("/productCount")
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
     public ResponseEntity<?> productCount(
             @Conjunction({
                     @Or({@Spec(path = "productName", params = "hasName", spec = EqualIgnoreCase.class),
@@ -58,24 +64,28 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
     public ResponseEntity<Product> productById(@PathVariable int id) {
         return productService.getProductById(id);
     }
 
     // Ruta para la creacion de productos
     @PostMapping("/create")
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
     public void createProduct(@RequestBody Product product) {
         productService.save(product);
     }
 
     // Ruta para la modificacion de productos
     @PutMapping("/edit/{id}")
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
     public ResponseEntity<Product> updateProduct(@RequestBody Product product, @PathVariable int id) {
         return productService.update(product, id);
     }
 
     // Ruta para la eliminacion de productos
     @DeleteMapping("/delete/{id}")
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
     public void deleteProduct(@PathVariable int id) {
         productService.delete(id);
     }
