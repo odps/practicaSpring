@@ -1,10 +1,12 @@
 package es.odec.pruebas.controllers;
 
+import es.odec.pruebas.models.Token;
 import es.odec.pruebas.models.User;
 import es.odec.pruebas.services.CustomUserDetailsService;
 import es.odec.pruebas.services.UserService;
 import es.odec.pruebas.utils.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -47,16 +49,16 @@ public class AuthController {
 
     }
 
+//    @CrossOrigin(origins = "*")
     @PostMapping("/login")
-    public String loginUser(@RequestBody User authUser) throws Exception {
+    public ResponseEntity<?> loginUser(@RequestBody User authUser) throws Exception {
         System.out.println("=== Entrada al endpoint de login");
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(authUser.getUsername(), authUser.getPassword())
         );
         final UserDetails userDetails = userDetailsService.loadUserByUsername(authUser.getUsername());
         final String jwt = jwtUtil.generateToken(userDetails);
-
-        return jwt;
+        return ResponseEntity.ok(new Token(jwt));
     }
 
     @GetMapping("/hello")
