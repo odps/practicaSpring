@@ -10,11 +10,17 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.servlet.configuration.EnableWebMvcSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.List;
 
 
 @Configuration
@@ -44,47 +50,31 @@ public class SecurityConfig {
     }
 
     @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(List.of("http://localhost:4200"));
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
+        configuration.setAllowCredentials(true);
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
+
+    @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-
-//        http.csrf().disable().cors().disable()
-//                .authorizeRequests().anyRequest().permitAll()
-//                .and().sessionManagement()
-//                .sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().logout().permitAll();
-
-        //Security config oficial, deshabilitado para pruebas
-
-        http.csrf().disable().cors().disable()
+        http
+                .csrf().disable()
+                .cors().configurationSource(corsConfigurationSource()) // Enable CORS
+                .and()
                 .authorizeRequests()
-                // Publicos
-                .requestMatchers("/register", "/login").anonymous()
-//
-//                // Admin .hasAuthority("MANAGE_USERS")
-////                .requestMatchers("/user/**", "/role/**", "/permission/**").hasAnyAuthority("CREATE", "DELETE", "UPDATE", "ADMIN")
-//
-//                // Shop
-////                .requestMatchers("/shop/**").hasAnyAuthority("CREATE")
-//
-//                // Product
-////                .requestMatchers("/product/create", "/product/edit/**", "/product/delete/**")
-////                .hasAnyAuthority("CREATE")
-////                .requestMatchers("/product/list").hasAuthority("CREATE")
-//
-//                // Stock
-////                .requestMatchers("/stock/**").hasAuthority("CREATE")
-//
-//                // Order
-////                .requestMatchers("/order/create").hasAuthority("CREATE")
-////                .requestMatchers("/order/**").hasAnyAuthority("CREATE")
-//
-//                // Invoice
-////                .requestMatchers("/invoice/**").authenticated()
-//
-//                //Hello para pruebas
-////                .requestMatchers("/hello").authenticated()
-//
+                .requestMatchers("/register", "/login").permitAll() // Public endpoints
                 .anyRequest().authenticated()
-                .and().sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().logout().permitAll();
+                .and()
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+                .logout().permitAll();
 
         http.addFilterBefore(jwtRequestFilter(), UsernamePasswordAuthenticationFilter.class);
 
