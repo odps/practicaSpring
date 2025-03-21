@@ -1,6 +1,7 @@
 import {Component} from '@angular/core';
 import {AuthService} from '../../../services/auth.service';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -16,15 +17,16 @@ export class LoginComponent {
   username: string = '';
   password: string = '';
 
-  constructor(private authService: AuthService) {
+  constructor(private authService: AuthService, private router: Router) {
   }
 
   onLogin() {
     this.authService.login(this.username, this.password).subscribe(
       next => {
         if (next.token) {
-          console.log(next);
+          console.log('Login successful');
           localStorage.setItem('token', next.token);
+          this.router.navigate(['/main']);
         }
       }, error => {
         console.error(error);
