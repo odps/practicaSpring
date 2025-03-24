@@ -65,10 +65,10 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf().disable()
-                .cors().configurationSource(corsConfigurationSource()) // Enable CORS
+                .cors().configurationSource(corsConfigurationSource())
                 .and()
                 .authorizeRequests()
-                .requestMatchers("/register", "/login").permitAll() // Public endpoints
+                .requestMatchers("/register", "/login").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .sessionManagement()

@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,11 +20,19 @@ public class UserService implements IUserService {
     @Autowired
     UserRepo userRepo;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     //Recoger usuarios
     @Override
     public ResponseEntity<List<User>> getUsers() {
         List<User> users = userRepo.findAll();
         return ResponseEntity.ok().body(users);
+    }
+
+    public ResponseEntity<User> getUserByUsername(String username){
+        User user = userRepo.findByUsername(username);
+        return ResponseEntity.ok().body(user);
     }
 
     //Recoger usuarios con paginado manual
@@ -98,6 +107,8 @@ public class UserService implements IUserService {
         if (user == null || userRepo.findByUsername(user.getUsername()) != null) {
             return ResponseEntity.badRequest().build();
         }
+        // Codifica la contraseña del usuario
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         return ResponseEntity.ok().body(userRepo.save(user));
     }
 
@@ -114,7 +125,6 @@ public class UserService implements IUserService {
         userNew.setLastName(oldUser.getLastName());
         userNew.setEmail(oldUser.getEmail());
         userNew.setUsername(oldUser.getUsername());
-        userNew.setPassword(oldUser.getPassword());
         userNew.setRole(oldUser.getRole());
         userNew.setShops(oldUser.getShops());
         userNew.setInvoices(oldUser.getInvoices());

@@ -1,6 +1,6 @@
 package es.odec.pruebas.controllers;
 
-import es.odec.pruebas.models.Token;
+import es.odec.pruebas.models.AuthUser;
 import es.odec.pruebas.models.User;
 import es.odec.pruebas.services.CustomUserDetailsService;
 import es.odec.pruebas.services.UserService;
@@ -38,8 +38,7 @@ public class AuthController {
     public String registerUser(@RequestBody User user) {
 
         try {
-            // Codifica la contraseña del usuario
-            user.setPassword(passwordEncoder.encode(user.getPassword()));
+
             // Crea el usuario en la BB.DD
             userService.createUser(user);
             return "User registered successfully";
@@ -58,7 +57,8 @@ public class AuthController {
         );
         final UserDetails userDetails = userDetailsService.loadUserByUsername(authUser.getUsername());
         final String jwt = jwtUtil.generateToken(userDetails);
-        return ResponseEntity.ok(new Token(jwt));
+        final User user = userService.getUserByUsername(authUser.getUsername()).getBody();
+        return ResponseEntity.ok(new AuthUser(jwt, user));
     }
 
     @GetMapping("/hello")

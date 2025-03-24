@@ -26,6 +26,7 @@ export class LoginComponent {
         if (next.token) {
           console.log('Login successful');
           localStorage.setItem('token', next.token);
+          localStorage.setItem('currentUser', JSON.stringify(next.user));
           this.router.navigate(['/main']);
         }
       }, error => {
