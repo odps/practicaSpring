@@ -9,7 +9,6 @@ import {User} from '../../shared/interfaces/user';
 export class UserService {
 
   constructor(private http: HttpClient) {
-
   }
 
   getAllUsers() {
@@ -23,4 +22,9 @@ export class UserService {
   updateUser(id: number, user: User) {
     return this.http.put<any>(environment.apiUrl + '/user/edit/' + id, user).subscribe();
   }
+
+  saveUser(user: User) {
+    return this.http.post<any>(environment.apiUrl + '/register', user);
+  }
+
 }

@@ -1,7 +1,4 @@
-<h2 class="text-center text-bg-success">
-  Usuarios
-</h2>
-
+<h2 class="text-center text-bg-success">Usuarios</h2>
 
 <p-table #dt [value]="tableData"
          [paginator]="true"
@@ -15,7 +12,10 @@
   <ng-template pTemplate="caption">
 
     <div style="text-align: right">
-      <p-button *ngIf="currentUser.role.roleName === 'admin'" label="Create"/>
+
+      <p-button *ngIf="currentUser.role?.roleName === 'admin'" label="Create"
+                (click)="showCreate()"/>
+
       <i class="pi pi-search"
          style="margin:4px 4px 0 0"> </i>
       <input type="text" pInputText
@@ -39,7 +39,6 @@
       <th>Actions</th>
     </tr>
   </ng-template>
-
   <ng-template pTemplate="body" let-user>
     <tr>
       <td>
@@ -58,7 +57,7 @@
         {{ user.role?.roleName || "n/a" }}
       </td>
       <td *ngIf="currentUser.role?.roleName === 'admin'">
-        <p-button id="editBtn" (click)="showDialog(user, 'edit')" label="Edit"/>
+        <p-button id="editBtn" (click)="showUpdate(user)" label="Edit"/>
         <p-button (click)="deleteUser(user.userId)">Eliminar</p-button>
       </td>
     </tr>
@@ -66,30 +65,74 @@
   </ng-template>
 </p-table>
 
-<p-dialog header="Edit Profile" [modal]="true" [(visible)]="visible" [style]="{ width: '25rem'}">
+<p-dialog header="Create Profile" [modal]="true" [(visible)]="visible" [style]="{ width: '25rem'}">
+  <span class="p-text-secondary block mb-8">Create a new user.</span>
 
-    <span class="p-text-secondary block mb-8">
-    {{ eventTrigger === 'edit' ? 'Create new user.' : 'Update user information.' }}
-  </span>
-  <div class="flex items-center gap-4 mb-4">
-    <label for="FirstName" class="font-semibold w-24">FirstName</label>
-    <input pInputText id="FirstName" class="flex-auto" autocomplete="off" [(ngModel)]="editableUser.firstName"
-           name="firstName"/>
-  </div>
-  <div class="flex items-center gap-4 mb-8">
-    <label for="LastName" class="font-semibold w-24">LastName</label>
-    <input pInputText id="LastName" class="flex-auto" autocomplete="off" [(ngModel)]="editableUser.lastName"
-           name="lastName"/>
-  </div>
-  <div class="flex items-center gap-4 mb-8">
-    <label for="email" class="font-semibold w-24">Email</label>
-    <input pInputText id="email" class="flex-auto" autocomplete="off"
-           [(ngModel)]="editableUser.email" name="email"
-    />
-  </div>
-  <div class="flex justify-end gap-2">
-    <p-button label="Cancel" severity="secondary" (click)="visible = false"/>
+  <form [formGroup]="createForm" (ngSubmit)="saveUser()">
+    <div class="flex items-center gap-4 mb-4">
+      <label class="font-semibold w-24">First Name</label>
+      <input pInputText class="flex-auto" autocomplete="off" formControlName="firstname" name="firstName"/>
+    </div>
 
-    <p-button label="Save" (click)="updateUser()"/>
-  </div>
+    <div class="flex items-center gap-4 mb-8">
+      <label class="font-semibold w-24">Last Name</label>
+      <input pInputText class="flex-auto" autocomplete="off" formControlName="lastname" name="lastName"/>
+    </div>
+
+    <div class="flex items-center gap-4 mb-8">
+      <label class="font-semibold w-24">Email</label>
+      <input pInputText class="flex-auto" autocomplete="off" formControlName="email" name="email"/>
+    </div>
+
+    <div class="flex items-center gap-4 mb-8">
+      <label class="font-semibold w-24">Username</label>
+      <input pInputText class="flex-auto" autocomplete="off" formControlName="username" name="username"/>
+    </div>
+
+    <div class="flex items-center gap-4 mb-8">
+      <label class="font-semibold w-24">Password</label>
+      <input pInputText class="flex-auto" autocomplete="off" formControlName="password" name="password"/>
+    </div>
+
+    <div class="flex items-center gap-4 mb-8">
+      <label class="font-semibold w-24">Role</label>
+      <select pDropdown class="flex-auto" formControlName="role" name="role">
+        <option *ngFor="let role of roles" [ngValue]="role">{{ role.id + ": " + role.roleName }}</option>
+      </select>
+    </div>
+
+    <div class="flex justify-end gap-2">
+      <p-button label="Cancel" severity="secondary" (click)="visible = false"/>
+      <p-button label="Save" type="submit"></p-button>
+    </div>
+
+  </form>
 </p-dialog>
+
+<!--<p-dialog header="Edit Profile" [modal]="true" [(visible)]="visible" [style]="{ width: '25rem'}">&ndash;&gt;-->
+
+<!--      <span class="p-text-secondary block mb-8">-->
+<!--      Update user information.-->
+<!--    </span>-->
+<!--    <div class="flex items-center gap-4 mb-4">-->
+<!--      <label class="font-semibold w-24">FirstName</label>-->
+<!--      <input pInputText class="flex-auto" autocomplete="off" [(ngModel)]="editableUser.firstName"-->
+<!--             name="firstName"/>-->
+<!--    </div>-->
+<!--    <div class="flex items-center gap-4 mb-8">-->
+<!--      <label class="font-semibold w-24">LastName</label>-->
+<!--      <input pInputText class="flex-auto" autocomplete="off" [(ngModel)]="editableUser.lastName"-->
+<!--             name="lastName"/>-->
+<!--    </div>-->
+<!--    <div class="flex items-center gap-4 mb-8">-->
+<!--      <label class="font-semibold w-24">Email</label>-->
+<!--      <input pInputText class="flex-auto" autocomplete="off"-->
+<!--             [(ngModel)]="editableUser.email" name="email"-->
+<!--      />-->
+<!--    </div>-->
+<!--    <div class="flex justify-end gap-2">-->
+<!--      <p-button label="Cancel" severity="secondary" (click)="visible = false"/>-->
+
+<!--      <p-button label="Save" (click)="updateUser()"/>-->
+<!--    </div>-->
+<!--  </p-dialog>-->

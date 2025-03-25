@@ -27,7 +27,7 @@ export class AuthService {
 
   getUserRole(): any {
     let user: User = JSON.parse(<string>localStorage.getItem('currentUser'));
-    return user.role.roleName;
+    return user.role?.roleName;
   }
 
 
