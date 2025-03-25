@@ -14,7 +14,7 @@
     <div style="text-align: right">
 
       <p-button *ngIf="currentUser.role?.roleName === 'admin'" label="Create"
-                (click)="showCreate()"/>
+                (click)="showForm()"/>
 
       <i class="pi pi-search"
          style="margin:4px 4px 0 0"> </i>
@@ -57,7 +57,7 @@
         {{ user.role?.roleName || "n/a" }}
       </td>
       <td *ngIf="currentUser.role?.roleName === 'admin'">
-        <p-button id="editBtn" (click)="showUpdate(user)" label="Edit"/>
+        <p-button id="editBtn" (click)="showForm(true, user)" label="Edit"/>
         <p-button (click)="deleteUser(user.userId)">Eliminar</p-button>
       </td>
     </tr>
@@ -65,10 +65,12 @@
   </ng-template>
 </p-table>
 
-<p-dialog header="Create Profile" [modal]="true" [(visible)]="visible" [style]="{ width: '25rem'}">
-  <span class="p-text-secondary block mb-8">Create a new user.</span>
+<p-dialog header="{{editable ? 'Edit profile':'Create Profile'}}" [modal]="true" [(visible)]="visible"
+          [style]="{ width: '25rem'}">
+  <span class="p-text-secondary block mb-8">{{ editable ? "Edit user." : "Create a new user." }}</span>
 
-  <form [formGroup]="createForm" (ngSubmit)="saveUser()">
+  <form [formGroup]="createForm" (ngSubmit)="onSubmit()">
+
     <div class="flex items-center gap-4 mb-4">
       <label class="font-semibold w-24">First Name</label>
       <input pInputText class="flex-auto" autocomplete="off" formControlName="firstname" name="firstName"/>
@@ -84,12 +86,12 @@
       <input pInputText class="flex-auto" autocomplete="off" formControlName="email" name="email"/>
     </div>
 
-    <div class="flex items-center gap-4 mb-8">
+    <div *ngIf="!editable" class="flex items-center gap-4 mb-8">
       <label class="font-semibold w-24">Username</label>
       <input pInputText class="flex-auto" autocomplete="off" formControlName="username" name="username"/>
     </div>
 
-    <div class="flex items-center gap-4 mb-8">
+    <div *ngIf="!editable" class="flex items-center gap-4 mb-8">
       <label class="font-semibold w-24">Password</label>
       <input pInputText class="flex-auto" autocomplete="off" formControlName="password" name="password"/>
     </div>
@@ -108,31 +110,3 @@
 
   </form>
 </p-dialog>
-
-<!--<p-dialog header="Edit Profile" [modal]="true" [(visible)]="visible" [style]="{ width: '25rem'}">&ndash;&gt;-->
-
-<!--      <span class="p-text-secondary block mb-8">-->
-<!--      Update user information.-->
-<!--    </span>-->
-<!--    <div class="flex items-center gap-4 mb-4">-->
-<!--      <label class="font-semibold w-24">FirstName</label>-->
-<!--      <input pInputText class="flex-auto" autocomplete="off" [(ngModel)]="editableUser.firstName"-->
-<!--             name="firstName"/>-->
-<!--    </div>-->
-<!--    <div class="flex items-center gap-4 mb-8">-->
-<!--      <label class="font-semibold w-24">LastName</label>-->
-<!--      <input pInputText class="flex-auto" autocomplete="off" [(ngModel)]="editableUser.lastName"-->
-<!--             name="lastName"/>-->
-<!--    </div>-->
-<!--    <div class="flex items-center gap-4 mb-8">-->
-<!--      <label class="font-semibold w-24">Email</label>-->
-<!--      <input pInputText class="flex-auto" autocomplete="off"-->
-<!--             [(ngModel)]="editableUser.email" name="email"-->
-<!--      />-->
-<!--    </div>-->
-<!--    <div class="flex justify-end gap-2">-->
-<!--      <p-button label="Cancel" severity="secondary" (click)="visible = false"/>-->
-
-<!--      <p-button label="Save" (click)="updateUser()"/>-->
-<!--    </div>-->
-<!--  </p-dialog>-->

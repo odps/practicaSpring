@@ -30,8 +30,8 @@ export class UsertableComponent implements OnInit, OnChanges {
   tableData: User[] = [];
   roles: Role[] = [];
   visible: boolean = false;
+  editable: boolean = false;
   currentUser: User = JSON.parse(<string>localStorage.getItem('currentUser'));
-  editableUser: User = JSON.parse(<string>localStorage.getItem('currentUser'));
 
   createForm = new FormGroup({
     id: new FormControl(0),
@@ -46,7 +46,6 @@ export class UsertableComponent implements OnInit, OnChanges {
   constructor(private userService: UserService, private roleService: RoleService) {
   }
 
-
   ngOnChanges() {
     this.updateTable()
   }
@@ -56,27 +55,52 @@ export class UsertableComponent implements OnInit, OnChanges {
     this.getRoles();
   }
 
-  showUpdate(user: User) {
+  showForm(editable: boolean = false, user?: User) {
     this.createForm.reset();
+    this.editable = editable;
+
+    if (editable && user) {
+      this.createForm.patchValue({
+        id: user.userId,
+        firstname: user.firstName,
+        lastname: user.lastName,
+        email: user.email,
+        username: user.username,
+        password: user.password,
+        role: user.role,
+      })
+    }
+
     this.visible = true;
-    this.editableUser = user;
+
   }
 
-  showCreate() {
+  onSubmit() {
+    if (this.editable) {
+      this.updateUser();
+    } else {
+      this.saveUser()
+    }
+  }
+
+  updateUser() {
+    const user: User = {
+      userId: this.createForm.value.id || 0,
+      firstName: this.createForm.value.firstname || '',
+      lastName: this.createForm.value.lastname || '',
+      email: this.createForm.value.email || '',
+      username: this.createForm.value.username || '',
+      password: this.createForm.value.password || '',
+      role: this.createForm.value.role ? this.createForm.value.role : undefined
+    };
+
+    console.log("Actualizando usuario: " + JSON.stringify(user));
+    this.userService.updateUser(<number>user.userId, user);
+
+    this.visible = false;
     this.createForm.reset();
-    this.visible = true;
+    this.updateTable();
   }
-
-  deleteUser(id: number) {
-    console.log("Se ha borrado: " + id);
-    this.userService.deleteUser(id);
-  }
-
-  // updateUser() {
-  //   this.visible = false;
-  //   console.log("Usuario editado: " + this.editableUser.userId);
-  //   this.userService.updateUser(this.editableUser.userId, this.editableUser);
-  // }
 
   saveUser() {
     const user: User = {
@@ -92,13 +116,19 @@ export class UsertableComponent implements OnInit, OnChanges {
     console.log(JSON.stringify(user));
     console.log(user.role?.id + ": " + user.role?.roleName);
 
-    this.visible = false;
     console.log('Se ha generado un nuevo usuario');
     this.userService.saveUser(user).subscribe(response => {
       console.log('Usuario guardado correctamente: ', response);
     })
+    
+    this.visible = false;
     this.createForm.reset();
     this.updateTable();
+  }
+
+  deleteUser(id: number) {
+    console.log("Se ha borrado: " + id);
+    this.userService.deleteUser(id);
   }
 
   updateTable() {
