@@ -22,6 +22,7 @@
              size="50"
              placeholder="Escribe aqui para buscar"
              style="width:auto"
+             (input)="applyFilterGlobal($event, 'contains')"
       />
       <!-- Error al implementar el fitlrado de resultados -->
       <!--             (input)="dt?.filterGlobal($event.target.value, 'contains')"-->

@@ -1,5 +1,5 @@
-import {Component, OnChanges, OnInit} from '@angular/core';
-import {TableModule} from 'primeng/table';
+import {Component, OnChanges, OnInit, ViewChild} from '@angular/core';
+import {Table, TableModule} from 'primeng/table';
 import {User} from '../../../shared/interfaces/user';
 import {UserService} from '../../../core/services/user.service';
 import {InputText} from 'primeng/inputtext';
@@ -27,6 +27,7 @@ import {RoleService} from '../../../core/services/role.service';
 })
 export class UsertableComponent implements OnInit, OnChanges {
 
+  @ViewChild('dt') dt: Table | undefined;
   tableData: User[] = [];
   roles: Role[] = [];
   visible: boolean = false;
@@ -120,7 +121,7 @@ export class UsertableComponent implements OnInit, OnChanges {
     this.userService.saveUser(user).subscribe(response => {
       console.log('Usuario guardado correctamente: ', response);
     })
-    
+
     this.visible = false;
     this.createForm.reset();
     this.updateTable();
@@ -149,6 +150,11 @@ export class UsertableComponent implements OnInit, OnChanges {
       }
     )
   }
+  
+  applyFilterGlobal($event: any, stringVal: any) {
+    this.dt!.filterGlobal(($event.target as HTMLInputElement).value, stringVal);
+  }
+
 
   protected readonly localStorage = localStorage;
 }
