@@ -16,6 +16,16 @@ export class UserService {
     return this.http.get<any>(environment.apiUrl + '/user/list');
   }
 
+  getAllUsersPaginated(page: number = 0, size: number = 5, sort?: string): Observable<any> {
+    let params = new URLSearchParams();
+    params.set('page', page.toString());
+    params.set('size', size.toString());
+    if (sort) {
+      params.set('sort', sort);
+    }
+    return this.http.get<any>(`${environment.apiUrl}/user/pagedList?${params.toString()}`);
+  }
+
   deleteUser(id: number) {
     this.http.delete<any>(environment.apiUrl + "/user/delete/" + id).subscribe();
   }

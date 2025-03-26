@@ -13,4 +13,8 @@ export class RoleService {
   getRoles() {
     return this.http.get<any>(environment.apiUrl + '/role/list');
   }
+
+  getRolesPaginated() {
+    return this.http.get<any>(environment.apiUrl + '/role/pagedList');
+  }
 }

@@ -1,0 +1,34 @@
+<p-table
+  [tableStyle]="{ 'min-width': '50rem' }"
+  [value]="content"
+  showGridlines
+
+  [paginator]="paginated"
+  showCurrentPageReport
+  [lazy]="true"
+  (onLazyLoad)="onLazyLoad($event)"
+  [rows]="paginatedData.size"
+  [totalRecords]="paginatedData.totalElements"
+  [rowsPerPageOptions]="rowSize"
+  [currentPageReportTemplate]="'Showing {first} to {last} of {totalRecords} entries'"
+
+  (onSort)="onSortedColumn($event)"
+>
+
+  <ng-template pTemplate="header">
+    <tr>
+      <th *ngFor="let field of alias" [pSortableColumn]="field">
+        {{ field }}
+      </th>
+    </tr>
+  </ng-template>
+
+  <ng-template pTemplate="body" let-object>
+    <tr>
+      <td *ngFor="let field of fields">
+        {{ this.objectCheck(object, field) }}
+      </td>
+    </tr>
+  </ng-template>
+
+</p-table>

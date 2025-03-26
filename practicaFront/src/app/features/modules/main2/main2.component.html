@@ -1,0 +1,10 @@
+<div *ngIf="loading" class="loading">Loading...</div>
+<app-header></app-header>
+<app-generic-table
+  *ngIf="!loading"
+  [paginatedData]="paginatedData"
+  [config]="tableConfig"
+  (onPageChange)="onPageChange($event)"
+  (onSortedChange)="onSortedChange($event)"
+>
+</app-generic-table>
