@@ -89,13 +89,15 @@ export class Main2Component implements OnInit {
   }
 
   onSortedChange(event: any) {
-    console.log(event.filter);
-    console.log(event.column);
-    console.log(event.page);
-    this.userService.getAllUsersPaginated(event.page, event.column, event.filter).subscribe(
+    const page = event.page;
+    const size = event.rows;
+    const sort = `${event.filter},${event.direction || 'asc'}`;
+
+    this.userService.getAllUsersPaginated(page, size, sort).subscribe(
       response => {
         this.paginatedData = response;
-      }, error => console.log(error)
-    )
+      },
+      error => console.log(error)
+    );
   }
 }

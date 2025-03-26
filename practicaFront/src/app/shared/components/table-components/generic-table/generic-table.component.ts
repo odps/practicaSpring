@@ -67,15 +67,13 @@ export class GenericTableComponent implements OnInit, OnChanges {
   }
 
   onSortedColumn(event: any) {
-    // console.log('onSortedColumn', event);
     let clicked = event.field;
     let position = this.alias.indexOf(clicked);
-    // console.log(this.fields[position]);
     this.onSortedChange.emit({
       filter: this.fields[position],
       page: this.paginatedData.pageable.pageNumber,
-      column: this.paginatedData.size
+      rows: this.paginatedData.size,
+      direction: event.order === 1 ? 'asc' : 'desc'
     });
-
   }
 }
