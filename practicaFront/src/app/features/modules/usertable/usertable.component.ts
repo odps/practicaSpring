@@ -48,7 +48,6 @@ export class UsertableComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges() {
-    this.updateTable()
   }
 
   ngOnInit() {
@@ -96,11 +95,16 @@ export class UsertableComponent implements OnInit, OnChanges {
     };
 
     console.log("Actualizando usuario: " + JSON.stringify(user));
-    this.userService.updateUser(<number>user.userId, user);
+    this.userService.updateUser(<number>user.userId, user).subscribe({
+      next: (edit: boolean) => {
+        this.updateTable()
+      },
+      error: () => {
+      }
+    });
 
     this.visible = false;
     this.createForm.reset();
-    this.updateTable();
   }
 
   saveUser() {
@@ -150,7 +154,7 @@ export class UsertableComponent implements OnInit, OnChanges {
       }
     )
   }
-  
+
   applyFilterGlobal($event: any, stringVal: any) {
     this.dt!.filterGlobal(($event.target as HTMLInputElement).value, stringVal);
   }
