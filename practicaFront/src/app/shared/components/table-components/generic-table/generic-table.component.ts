@@ -66,7 +66,7 @@ export class GenericTableComponent implements OnInit, OnChanges {
     } else return obj;
   }
 
-  onLazyLoad(event: any) {
+  onPagination(event: any) {
     // console.log(event)
     this.onPageChange.emit(event);
     console.log(this.paginatedData);

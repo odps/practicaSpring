@@ -7,7 +7,8 @@
   [paginator]="paginated"
   showCurrentPageReport
   [lazy]="true"
-  (onLazyLoad)="onLazyLoad($event)"
+
+  (onPage)="onPagination($event)"
   [rows]="paginatedData.size"
   [totalRecords]="paginatedData.totalElements"
   [rowsPerPageOptions]="rowSize"
@@ -15,7 +16,6 @@
 
   (onSort)="onSortedColumn($event)"
 >
-
   <ng-template #caption>
     <div class="flex">
       <p-button label="Clear" [outlined]="true" icon="pi pi-filter-slash" (click)="clear(dt)"/>
@@ -24,8 +24,11 @@
 
   <ng-template pTemplate="header">
     <tr>
-      <th *ngFor="let field of alias" [pSortableColumn]="field">
-        {{ field }}
+      <th *ngFor="let field of alias" [pSortableColumn]="field" style="min-width:15rem">
+        <div class="flex items-center">
+          {{ field }}
+          <p-columnFilter type="text" field="{{field}}" display="menu"/>
+        </div>
       </th>
     </tr>
   </ng-template>
