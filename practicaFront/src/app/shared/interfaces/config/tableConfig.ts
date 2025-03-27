@@ -4,6 +4,7 @@ export interface TableConfig {
   fields: Array<any>;
   alias: Array<any>;
   objects?: Map<any, any>;
+  types: any[];
   pagination: paginationConfig;
 }
 

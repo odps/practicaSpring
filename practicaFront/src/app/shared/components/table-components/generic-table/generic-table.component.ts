@@ -23,6 +23,7 @@ export class GenericTableComponent implements OnInit, OnChanges {
 
   @Output() onPageChange: EventEmitter<any> = new EventEmitter();
   @Output() onSortedChange: EventEmitter<any> = new EventEmitter();
+  @Output() onFilterChange: EventEmitter<any> = new EventEmitter();
 
   @ViewChild('dt') dataTable: Table = dt();
 
@@ -83,7 +84,31 @@ export class GenericTableComponent implements OnInit, OnChanges {
     });
   }
 
+  onColumnFilter(event: any) {
+    // console.log(event);
+    this.onFilterChange.emit({
+      info: event,
+      pageData: {
+        sort: "",
+        page: this.paginatedData.pageable.pageNumber,
+        rows: this.paginatedData.size,
+        direction: 'asc'
+      }
+    });
+  }
+
   clear(table: Table) {
     this.dataTable.clear();
+    // console.log(this.config.types["createdAt"]);
   }
+
+  checkType(type: any): string {
+    let result = this.config.types[0][this.fields[this.alias.indexOf(type)]];
+    return result;
+  }
+
+  getField(field: any) {
+    return this.fields[this.alias.indexOf(field)]
+  }
+
 }

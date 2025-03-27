@@ -28,11 +28,18 @@ export class Main2Component implements OnInit {
     objects: new Map([
       ['role', 'roleName']
     ]),
+    types: [{
+      "userId": 'numeric',
+      "firstName": 'text',
+      "lastName": 'text',
+      "email": 'text',
+      "role": 'text',
+      "createdAt": 'date'
+    }],
     pagination: {
       paginated: true,
       rows: [5, 10, 15],
       sortParams: ["userId", "firstName", "lastName", "email", "role"],
-
     }
   };
 
@@ -78,7 +85,6 @@ export class Main2Component implements OnInit {
     // console.log(event)
     let page = event.first / event.rows
     // console.log("Estoy en la pagina: " + page)
-
     this.userService.getAllUsersPaginated(page, event.rows).subscribe(
       response => {
         this.paginatedData = response;
@@ -93,10 +99,30 @@ export class Main2Component implements OnInit {
     const size = event.rows;
     const sort = event.sort;
     const direction = event.direction || 'desc';
+    // console.log(event);
+    this.userService.getAllUsersPaginated(page, size, sort, direction).subscribe(
+      response => {
+        this.paginatedData = response;
+      },
+      error => console.log(error)
+    );
+  }
 
+  onFilterChange(event: any) {
     console.log(event);
 
-    this.userService.getAllUsersPaginated(page, size, sort, direction).subscribe(
+    let sort = event.pageData.sort;
+    let page = event.pageData.page;
+    let rows = event.pageData.rows;
+    let direction = event.pageData.direction;
+
+    let preparedQuery;
+
+    // event.info.filters.forEach((item: any) => {
+    //
+    // })
+
+    this.userService.getAllUsersPaginated(page, rows, sort, direction, preparedQuery).subscribe(
       response => {
         this.paginatedData = response;
       },

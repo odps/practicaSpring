@@ -15,6 +15,7 @@
   [currentPageReportTemplate]="'Showing {first} to {last} of {totalRecords} entries'"
 
   (onSort)="onSortedColumn($event)"
+  (onFilter)="onColumnFilter($event)"
 >
   <ng-template #caption>
     <div class="flex">
@@ -27,7 +28,7 @@
       <th *ngFor="let field of alias" [pSortableColumn]="field" style="min-width:15rem">
         <div class="flex items-center">
           {{ field }}
-          <p-columnFilter type="text" field="{{field}}" display="menu"/>
+          <p-columnFilter [type]="checkType(field)" [field]="getField(field)" display="menu"/>
         </div>
       </th>
     </tr>

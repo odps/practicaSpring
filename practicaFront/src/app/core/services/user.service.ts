@@ -16,7 +16,7 @@ export class UserService {
     return this.http.get<any>(environment.apiUrl + '/user/list');
   }
 
-  getAllUsersPaginated(page: number = 0, size: number = 5, sort?: string, direction?: string): Observable<any> {
+  getAllUsersPaginated(page: number = 0, size: number = 5, sort?: string, direction?: string, filter?: any[]): Observable<any> {
     let params = new URLSearchParams();
     params.set('page', page.toString());
     params.set('size', size.toString());
@@ -25,6 +25,9 @@ export class UserService {
     }
     if (sort) {
       params.set('sort', sort);
+    }
+    if (filter) {
+      params.set('filter', filter.toString());
     }
     return this.http.get<any>(`${environment.apiUrl}/user/pagedList?${params.toString()}`);
   }
