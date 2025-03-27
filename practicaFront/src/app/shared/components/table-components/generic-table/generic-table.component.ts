@@ -64,13 +64,14 @@ export class GenericTableComponent implements OnInit, OnChanges {
   onLazyLoad(event: any) {
     // console.log(event)
     this.onPageChange.emit(event);
+    console.log(this.paginatedData);
   }
 
   onSortedColumn(event: any) {
     let clicked = event.field;
     let position = this.alias.indexOf(clicked);
     this.onSortedChange.emit({
-      filter: this.fields[position],
+      sort: this.fields[position],
       page: this.paginatedData.pageable.pageNumber,
       rows: this.paginatedData.size,
       direction: event.order === 1 ? 'asc' : 'desc'

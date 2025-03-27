@@ -23,8 +23,8 @@ export class Main2Component implements OnInit {
   paginatedData: PaginatedList = {} as PaginatedList;
   //Para usuarios
   tableConfig: TableConfig = {
-    fields: ["userId", "firstName", "lastName", "email", "role"],
-    alias: ["Id", "First Name", "Last Name", "Email", "Role"],
+    fields: ["userId", "firstName", "lastName", "email", "role", "createdAt"],
+    alias: ["Id", "First Name", "Last Name", "Email", "Role", "Registration Date"],
     objects: new Map([
       ['role', 'roleName']
     ]),
@@ -91,9 +91,12 @@ export class Main2Component implements OnInit {
   onSortedChange(event: any) {
     const page = event.page;
     const size = event.rows;
-    const sort = `${event.filter},${event.direction || 'asc'}`;
+    const sort = event.sort;
+    const direction = event.direction || 'desc';
 
-    this.userService.getAllUsersPaginated(page, size, sort).subscribe(
+    console.log(event);
+
+    this.userService.getAllUsersPaginated(page, size, sort, direction).subscribe(
       response => {
         this.paginatedData = response;
       },

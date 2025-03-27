@@ -16,10 +16,13 @@ export class UserService {
     return this.http.get<any>(environment.apiUrl + '/user/list');
   }
 
-  getAllUsersPaginated(page: number = 0, size: number = 5, sort?: string): Observable<any> {
+  getAllUsersPaginated(page: number = 0, size: number = 5, sort?: string, direction?: string): Observable<any> {
     let params = new URLSearchParams();
     params.set('page', page.toString());
     params.set('size', size.toString());
+    if (direction) {
+      params.set('direction', direction);
+    }
     if (sort) {
       params.set('sort', sort);
     }
