@@ -1,4 +1,5 @@
 <p-table
+  #dt
   [tableStyle]="{ 'min-width': '50rem' }"
   [value]="content"
   showGridlines
@@ -14,6 +15,12 @@
 
   (onSort)="onSortedColumn($event)"
 >
+
+  <ng-template #caption>
+    <div class="flex">
+      <p-button label="Clear" [outlined]="true" icon="pi pi-filter-slash" (click)="clear(dt)"/>
+    </div>
+  </ng-template>
 
   <ng-template pTemplate="header">
     <tr>

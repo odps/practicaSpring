@@ -1,15 +1,18 @@
-import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
+import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild} from '@angular/core';
 import {PaginatedList} from '../../../interfaces/paginatedList';
-import {TableModule} from 'primeng/table';
+import {Table, TableModule} from 'primeng/table';
 import {TableConfig} from '../../../interfaces/config/tableConfig';
 import {NgForOf} from '@angular/common';
+import {Button} from 'primeng/button';
+import {dt} from '@primeng/themes';
 
 @Component({
   selector: 'app-generic-table',
   templateUrl: './generic-table.component.html',
   imports: [
     TableModule,
-    NgForOf
+    NgForOf,
+    Button
   ],
   styleUrls: ['./generic-table.component.css']
 })
@@ -20,6 +23,8 @@ export class GenericTableComponent implements OnInit, OnChanges {
 
   @Output() onPageChange: EventEmitter<any> = new EventEmitter();
   @Output() onSortedChange: EventEmitter<any> = new EventEmitter();
+
+  @ViewChild('dt') dataTable: Table = dt();
 
   //Campos e informacion sobre la tabla.
   fields: Array<any> = [];
@@ -76,5 +81,9 @@ export class GenericTableComponent implements OnInit, OnChanges {
       rows: this.paginatedData.size,
       direction: event.order === 1 ? 'asc' : 'desc'
     });
+  }
+
+  clear(table: Table) {
+    this.dataTable.clear();
   }
 }
