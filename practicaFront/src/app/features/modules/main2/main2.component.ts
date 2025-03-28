@@ -117,8 +117,8 @@ export class Main2Component implements OnInit {
     const page = event.page;
     const size = event.rows;
     const sort = event.sort;
-    const direction = event.direction || 'desc';
-    // console.log(event);
+    const direction = event.direction;
+    console.log(event);
     this.userService
       .getAllUsersPaginated(page, size, sort, direction)
       .subscribe(
@@ -154,7 +154,7 @@ export class Main2Component implements OnInit {
   }
 
   handleAction(event: any) {
-    console.log(event);
+    // console.log(event);
 
     switch (event.action) {
       case 'delete':

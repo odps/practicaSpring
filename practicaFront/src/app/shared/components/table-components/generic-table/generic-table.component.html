@@ -22,7 +22,7 @@
         label="Clear"
         [outlined]="true"
         icon="pi pi-filter-slash"
-        (click)="clear(dt)"
+        (click)="clear()"
       />
     </div>
   </ng-template>
@@ -32,7 +32,7 @@
       <th
         *ngFor="let field of alias"
         [pSortableColumn]="field"
-        style="min-width: 15rem"
+        style="min-width: 10rem"
       >
         <div class="flex items-center">
           {{ field }}

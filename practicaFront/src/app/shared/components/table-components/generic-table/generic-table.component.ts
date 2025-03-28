@@ -94,8 +94,8 @@ export class GenericTableComponent implements OnInit, OnChanges {
     });
   }
 
-  clear(table: Table) {
-    table.clear();
+  clear() {
+    this.dataTable.clear();
   }
 
   checkType(type: any): string {

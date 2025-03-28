@@ -24,11 +24,30 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+//    // Coger datos de los usuarios
+//    @GetMapping("/pagedList")
+//    @PreAuthorize("hasAnyAuthority('ADMIN')")
+//    public ResponseEntity<?> getPagedUsers(
+//            @PageableDefault(page = 0, size = 10, sort = "userId", direction = Sort.Direction.ASC) Pageable pageable,
+//            @Conjunction({
+//                    @Or({@Spec(path = "firstName", params = "hasName", spec = EqualIgnoreCase.class),
+//                            @Spec(path = "firstName", params = "likeName", spec = LikeIgnoreCase.class)}),
+//                    @Or({@Spec(path = "lastName", params = "hasLastName", spec = EqualIgnoreCase.class),
+//                            @Spec(path = "lastName", params = "likeLastName", spec = LikeIgnoreCase.class)}),
+//                    @Or({@Spec(path = "email", params = "hasEmail", spec = EqualIgnoreCase.class),
+//                            @Spec(path = "email", params = "likeEmail", spec = LikeIgnoreCase.class)})
+//            }) Specification<User> spec) {
+//        return userService.getUsers(pageable, spec);
+//    }
+
     // Coger datos de los usuarios
     @GetMapping("/pagedList")
     @PreAuthorize("hasAnyAuthority('ADMIN')")
     public ResponseEntity<?> getPagedUsers(
-            @PageableDefault(page = 0, size = 10, sort = "userId", direction = Sort.Direction.ASC) Pageable pageable,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "10") int size,
+            @RequestParam(value = "sort", defaultValue = "userId") String sort,
+            @RequestParam(value = "direction", defaultValue = "ASC") String direction,
             @Conjunction({
                     @Or({@Spec(path = "firstName", params = "hasName", spec = EqualIgnoreCase.class),
                             @Spec(path = "firstName", params = "likeName", spec = LikeIgnoreCase.class)}),
@@ -37,7 +56,7 @@ public class UserController {
                     @Or({@Spec(path = "email", params = "hasEmail", spec = EqualIgnoreCase.class),
                             @Spec(path = "email", params = "likeEmail", spec = LikeIgnoreCase.class)})
             }) Specification<User> spec) {
-        return userService.getUsers(pageable, spec);
+        return userService.getUsers(page, size, new String[]{sort}, direction, spec);
     }
 
     @GetMapping("/userCount")

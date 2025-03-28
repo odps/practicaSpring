@@ -56,37 +56,38 @@ public class UserService implements IUserService {
 //        }
 //    }
 
-//    public ResponseEntity<?> getUsers(int page, int size, String[] sortParams, String sort, Specification<User> spec) {
-//        try {
-//            //Determina direccion del sort (ASC,DESC,REVERSE)
-//            Sort.Direction sortMethod = Sort.Direction.fromString(sort);
-//
-//            //Ordena los resultados segun el Array de parametros enviados
-//            Pageable pageable = PageRequest.of(page, size, Sort.by(sortMethod, sortParams));
-//            Page<User> result = userRepo.findAll(spec, pageable);
-//
-//            if(!result.hasContent()){
-//                return ResponseEntity.notFound().build();
-//            }
-//
-//            return ResponseEntity.ok().body(result);
-//        } catch (Exception e) {
-//            return ResponseEntity.badRequest().body("Ha ocurrido un error: " + e.getMessage());
-//        }
-//    }
-
-    public ResponseEntity<?> getUsers(Pageable pageable, Specification<User> spec) {
+    public ResponseEntity<?> getUsers(int page, int size, String[] sortParams, String sort, Specification<User> spec) {
         try {
+            //Determina direccion del sort (ASC,DESC,REVERSE)
+            Sort.Direction sortMethod = Sort.Direction.fromString(sort);
+
+            //Ordena los resultados segun el Array de parametros enviados
+            Pageable pageable = PageRequest.of(page, size, Sort.by(sortMethod, sortParams));
             Page<User> result = userRepo.findAll(spec, pageable);
 
             if(!result.hasContent()){
                 return ResponseEntity.notFound().build();
             }
+
             return ResponseEntity.ok().body(result);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Ha ocurrido un error: " + e.getMessage());
         }
     }
+
+//    public ResponseEntity<?> getUsers(Pageable pageable, Specification<User> spec) {
+//        try {
+//
+//            Page<User> result = userRepo.findAll(spec, pageable);
+//
+//            if(!result.hasContent()){
+//                return ResponseEntity.notFound().build();
+//            }
+//            return ResponseEntity.ok().body(result);
+//        } catch (Exception e) {
+//            return ResponseEntity.badRequest().body("Ha ocurrido un error: " + e.getMessage());
+//        }
+//    }
 
 
     @Override
