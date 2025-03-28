@@ -45,7 +45,7 @@
         </div>
       </th>
       <th
-        *ngIf="config.actions && !hasActionsColumn()"
+        *ngIf="config.buttons && !hasActionsColumn()"
         style="min-width: 10rem"
       >
         Actions
@@ -54,30 +54,24 @@
   </ng-template>
 
   <ng-template pTemplate="body" let-object>
+    <!--    Celdas de la tabla-->
     <tr>
+
       <td *ngFor="let field of fields">
         {{ this.objectCheck(object, field) }}
       </td>
-      <td *ngIf="config.actions" class="flex gap-2">
+
+      <!--      Botones (en caso de haber sido pasados en config)-->
+      <td class="flex gap-2">
         <p-button
-          *ngIf="config.actions.edit"
-          icon="pi pi-pencil"
-          styleClass="p-button-warning p-button-sm"
-          (click)="onActionClick('edit', object)"
-        ></p-button>
-        <p-button
-          *ngIf="config.actions.delete"
-          icon="pi pi-trash"
-          styleClass="p-button-danger p-button-sm"
-          (click)="onActionClick('delete', object)"
-        ></p-button>
-        <p-button
-          *ngFor="let customAction of config.actions.custom"
-          [icon]="customAction.icon"
-          [styleClass]="customAction.styleClass || 'p-button-sm'"
-          (click)="onActionClick(customAction.label.toLowerCase(), object)"
-        ></p-button>
+          *ngFor="let action of config.buttons"
+          [icon]="action.icon"
+          [styleClass]="action.styleClass || 'p-button-sm'"
+          (click)="onActionClick(action.action.toLowerCase(), object)"
+        >{{ action.action }}
+        </p-button>
       </td>
+
     </tr>
   </ng-template>
 </p-table>

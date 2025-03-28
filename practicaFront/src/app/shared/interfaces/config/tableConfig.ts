@@ -1,4 +1,4 @@
-import { paginationConfig } from './pagination-config';
+import {paginationConfig} from './pagination-config';
 
 export interface TableConfig {
   fields: Array<any>;
@@ -6,15 +6,13 @@ export interface TableConfig {
   objects?: Map<any, any>;
   types: any[];
   pagination: paginationConfig;
-  actions?: {
-    edit?: boolean;
-    delete?: boolean;
-    custom?: Array<{
-      label: string;
-      icon: string;
-      styleClass?: string;
-    }>;
-  };
+  edit?: boolean;
+  delete?: boolean;
+  buttons?: Array<{
+    action: string;
+    icon: string;
+    styleClass?: string;
+  }>;
 }
 
 /*Objecto configurador de tablas:

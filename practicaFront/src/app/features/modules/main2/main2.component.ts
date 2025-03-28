@@ -1,11 +1,11 @@
-import { Component, OnInit } from '@angular/core';
-import { TableConfig } from '../../../shared/interfaces/config/tableConfig';
-import { UserService } from '../../../core/services/user.service';
-import { PaginatedList } from '../../../shared/interfaces/paginatedList';
-import { GenericTableComponent } from '../../../shared/components/table-components/generic-table/generic-table.component';
-import { NgIf } from '@angular/common';
-import { HeaderComponent } from '../../../shared/components/header/header.component';
-import { RoleService } from '../../../core/services/role.service';
+import {Component, OnInit} from '@angular/core';
+import {TableConfig} from '../../../shared/interfaces/config/tableConfig';
+import {UserService} from '../../../core/services/user.service';
+import {PaginatedList} from '../../../shared/interfaces/paginatedList';
+import {GenericTableComponent} from '../../../shared/components/table-components/generic-table/generic-table.component';
+import {NgIf} from '@angular/common';
+import {HeaderComponent} from '../../../shared/components/header/header.component';
+import {RoleService} from '../../../core/services/role.service';
 
 @Component({
   selector: 'app-main2',
@@ -45,17 +45,18 @@ export class Main2Component implements OnInit {
       rows: [5, 10, 15],
       sortParams: ['userId', 'firstName', 'lastName', 'email', 'role'],
     },
-    actions: {
-      edit: true,
-      delete: true,
-      custom: [
-        {
-          label: 'View',
-          icon: 'pi pi-eye',
-          styleClass: 'p-button-info p-button-sm',
-        },
-      ],
-    },
+    buttons: [
+      {
+        action: 'View',
+        icon: 'pi pi-eye',
+        styleClass: 'p-button-info p-button-sm m-1 p-2',
+      },
+      {
+        action: 'Delete',
+        icon: 'pi pi-eye',
+        styleClass: 'p-button-danger p-button-sm m-1 p-2',
+      }
+    ],
   };
 
   //Para roles
@@ -71,7 +72,8 @@ export class Main2Component implements OnInit {
   constructor(
     private userService: UserService,
     private roleService: RoleService
-  ) {}
+  ) {
+  }
 
   ngOnInit() {
     this.getUsers();
@@ -151,21 +153,18 @@ export class Main2Component implements OnInit {
       );
   }
 
-  handleAction(event: { action: string; item: any }) {
-    console.log(`Action: ${event.action}`, event.item);
+  handleAction(event: any) {
+    console.log(event);
 
     switch (event.action) {
-      case 'edit':
-        console.log('Editing user:', event.item);
-        break;
       case 'delete':
-        console.log('Deleting user:', event.item);
+        alert('Borrando user');
         break;
       case 'view':
-        console.log('Viewing user details:', event.item);
+        alert('Viendo user');
         break;
       default:
-        console.log('Unknown action:', event.action);
+        console.log('Accion desconocida:', event.action);
     }
   }
 }

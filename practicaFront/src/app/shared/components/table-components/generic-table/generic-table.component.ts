@@ -1,24 +1,15 @@
-import {
-  Component,
-  EventEmitter,
-  Input,
-  OnChanges,
-  OnInit,
-  Output,
-  SimpleChanges,
-  ViewChild,
-} from '@angular/core';
-import { PaginatedList } from '../../../interfaces/paginatedList';
-import { Table, TableModule } from 'primeng/table';
-import { TableConfig } from '../../../interfaces/config/tableConfig';
-import { NgForOf } from '@angular/common';
-import { Button } from 'primeng/button';
-import { dt } from '@primeng/themes';
+import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild,} from '@angular/core';
+import {PaginatedList} from '../../../interfaces/paginatedList';
+import {Table, TableModule} from 'primeng/table';
+import {TableConfig} from '../../../interfaces/config/tableConfig';
+import {NgForOf, NgIf} from '@angular/common';
+import {Button} from 'primeng/button';
+import {dt} from '@primeng/themes';
 
 @Component({
   selector: 'app-generic-table',
   templateUrl: './generic-table.component.html',
-  imports: [TableModule, NgForOf, Button],
+  imports: [TableModule, NgForOf, Button, NgIf],
   styleUrls: ['./generic-table.component.css'],
 })
 export class GenericTableComponent implements OnInit, OnChanges {
@@ -45,7 +36,8 @@ export class GenericTableComponent implements OnInit, OnChanges {
 
   //
 
-  constructor() {}
+  constructor() {
+  }
 
   ngOnInit() {
     this.fields = this.config.fields;
@@ -103,13 +95,12 @@ export class GenericTableComponent implements OnInit, OnChanges {
   }
 
   clear(table: Table) {
-    this.dataTable.clear();
-    // console.log(this.config.types["createdAt"]);
+    table.clear();
   }
 
   checkType(type: any): string {
-    let result = this.config.types[0][this.fields[this.alias.indexOf(type)]];
-    return result;
+    return this.config.types[0][this.fields[this.alias.indexOf(type)]];
+
   }
 
   getField(field: any) {
@@ -118,5 +109,9 @@ export class GenericTableComponent implements OnInit, OnChanges {
 
   hasActionsColumn(): boolean {
     return this.alias.includes('Actions');
+  }
+
+  onActionClick(action: string, item: any) {
+    this.onAction.emit({action, item});
   }
 }
