@@ -5,14 +5,14 @@ export interface TableConfig {
   alias: Array<any>;
   objects?: Map<any, any>;
   types: any[];
+  matchMode?: any[];
   pagination: paginationConfig;
-  edit?: boolean;
-  delete?: boolean;
   buttons?: Array<{
     action: string;
     icon: string;
     styleClass?: string;
   }>;
+
 }
 
 /*Objecto configurador de tablas:

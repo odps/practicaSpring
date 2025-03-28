@@ -1,0 +1,63 @@
+Descargar spring boot para visual studio
+entidades -> repo -> impl.servicios -> 
+mapeo de entidad
+
+----
+
+Compaginado de consultas en jpa
+(Poder pedir por partes las consultas, index y offset)
+
+Estructura sort, que tipo de dirección quieres y sobre que campos
+(Como queremos ordenar los resultados que llegan)
+
+Specifications (Usa criteria builder por dentro), @Spec(campo dd.bb, como-filtrar)
+(Filtrar los datos que nos llegan para que cumplan con ciertas condiciones)
+
+----
+En la base de datos de Oracle.
+
+Packages, generar un paquete. 
+IMPORTANTE:
+Que se llame los resultados desde el backend del procedure o function
+
+Que un procedure ejecute una función. HECHO
+Que un procedimiento que haga algo mal, que se controle el rollback. HECHO
+Que se genere un cursor, de una tabla y que se use en otra consulta. HECHO
+
+----
+
+Angular
+
+Crear un crud básico, login y register, al entrar debe haber una tabla genérica en la que se pueda ver información, se debe poder filtrar ordenar y paginar.
+
+----
+
+Tabla configurator
+tool bar configurable
+información inyectable
+paginable
+filtrable
+sorteable
+registros seleccionables
+botons fijos para todos (editar eliminar)
+
+Usa un JSON  configurable
+campos: tipo, nombre, titulo, ordenar, filtrar..etc.
+botones campos: iconos, nombre, accion
+botones tablas: ""
+paginador: bool
+rows per page
+filtro
+paginador
+
+----
+
+Formularios genéricos
+Usando reactive forms y formbuilder
+Los campos deben poder ser definidos en un config
+Debe tener un text, number, select, multiselect, boolean
+Validators y feedback visual cuando hay errores
+Se debe poder definir el numero de líneas que tiene el formulario y el espacio que ocupa cada elemento.
+Validators se pasan via config.
+Usando tailwind.
+Usando formArrays

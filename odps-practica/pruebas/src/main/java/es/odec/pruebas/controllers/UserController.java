@@ -3,6 +3,8 @@ package es.odec.pruebas.controllers;
 import es.odec.pruebas.models.User;
 import es.odec.pruebas.services.UserService;
 import net.kaczmarzyk.spring.data.jpa.domain.EqualIgnoreCase;
+import net.kaczmarzyk.spring.data.jpa.domain.GreaterThanOrEqual;
+import net.kaczmarzyk.spring.data.jpa.domain.LessThanOrEqual;
 import net.kaczmarzyk.spring.data.jpa.domain.LikeIgnoreCase;
 import net.kaczmarzyk.spring.data.jpa.web.annotation.Conjunction;
 import net.kaczmarzyk.spring.data.jpa.web.annotation.Or;
@@ -54,7 +56,9 @@ public class UserController {
                     @Or({@Spec(path = "lastName", params = "hasLastName", spec = EqualIgnoreCase.class),
                             @Spec(path = "lastName", params = "likeLastName", spec = LikeIgnoreCase.class)}),
                     @Or({@Spec(path = "email", params = "hasEmail", spec = EqualIgnoreCase.class),
-                            @Spec(path = "email", params = "likeEmail", spec = LikeIgnoreCase.class)})
+                            @Spec(path = "email", params = "likeEmail", spec = LikeIgnoreCase.class)}),
+                    @Or({@Spec(path = "createdAt", params = "createdAfter", spec = GreaterThanOrEqual.class),
+                            @Spec(path = "createdAt", params = "createdBefore", spec = LessThanOrEqual.class)}),
             }) Specification<User> spec) {
         return userService.getUsers(page, size, new String[]{sort}, direction, spec);
     }

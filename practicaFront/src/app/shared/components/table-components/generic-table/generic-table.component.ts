@@ -5,11 +5,12 @@ import {TableConfig} from '../../../interfaces/config/tableConfig';
 import {NgForOf, NgIf} from '@angular/common';
 import {Button} from 'primeng/button';
 import {dt} from '@primeng/themes';
+import {InputText} from 'primeng/inputtext';
 
 @Component({
   selector: 'app-generic-table',
   templateUrl: './generic-table.component.html',
-  imports: [TableModule, NgForOf, Button, NgIf],
+  imports: [TableModule, NgForOf, Button, NgIf, InputText],
   styleUrls: ['./generic-table.component.css'],
 })
 export class GenericTableComponent implements OnInit, OnChanges {
@@ -19,7 +20,6 @@ export class GenericTableComponent implements OnInit, OnChanges {
   @Output() onPageChange: EventEmitter<any> = new EventEmitter();
   @Output() onSortedChange: EventEmitter<any> = new EventEmitter();
   @Output() onFilterChange: EventEmitter<any> = new EventEmitter();
-
   @Output() onAction = new EventEmitter<{ action: string; item: any }>();
 
   @ViewChild('dt') dataTable: Table = dt();
@@ -114,4 +114,20 @@ export class GenericTableComponent implements OnInit, OnChanges {
   onActionClick(action: string, item: any) {
     this.onAction.emit({action, item});
   }
+
+  getMatchMode(field: any) {
+
+    if (this.config.matchMode) {
+      return this.config.matchMode[0][this.getField(field)];
+    } else
+      return undefined;
+  }
+
+  onInputChange(event: any, value: any, matchMode: string) {
+    // console.log(value);
+    // console.log(event.target.value);
+    // console.log(matchMode);
+    this.onFilterChange.emit({field: matchMode, value: event.target.value});
+  }
+
 }

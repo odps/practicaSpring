@@ -27,7 +27,9 @@ export class UserService {
       params.set('sort', sort);
     }
     if (filter) {
-      params.set('filter', filter.toString());
+      filter.forEach((f: any) => {
+        params.set(f.field, f.value);
+      });
     }
     return this.http.get<any>(`${environment.apiUrl}/user/pagedList?${params.toString()}`);
   }

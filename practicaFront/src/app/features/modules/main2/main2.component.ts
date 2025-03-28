@@ -40,6 +40,14 @@ export class Main2Component implements OnInit {
         createdAt: 'date',
       },
     ],
+    matchMode: [
+      {
+        firstName: 'likeName',
+        lastName: 'likeLastName',
+        email: 'likeEmail',
+        createdAt: 'createdBefore',
+      },
+    ],
     pagination: {
       paginated: true,
       rows: [5, 10, 15],
@@ -118,7 +126,7 @@ export class Main2Component implements OnInit {
     const size = event.rows;
     const sort = event.sort;
     const direction = event.direction;
-    console.log(event);
+    // console.log(event);
     this.userService
       .getAllUsersPaginated(page, size, sort, direction)
       .subscribe(
@@ -129,28 +137,38 @@ export class Main2Component implements OnInit {
       );
   }
 
+  // onFilterChange(event: any) {
+  //   console.log(event);
+  //
+  //   let sort = event.pageData.sort;
+  //   let page = event.pageData.page;
+  //   let rows = event.pageData.rows;
+  //   let direction = event.pageData.direction;
+  //
+  //   let preparedQuery;
+  //
+  //   // event.info.filters.forEach((item: any) => {
+  //   //
+  //   // })
+  //
+  //   this.userService
+  //     .getAllUsersPaginated(page, rows, sort, direction, preparedQuery)
+  //     .subscribe(
+  //       (response) => {
+  //         this.paginatedData = response;
+  //       },
+  //       (error) => console.log(error)
+  //     );
+  // }
+
   onFilterChange(event: any) {
     console.log(event);
-
-    let sort = event.pageData.sort;
-    let page = event.pageData.page;
-    let rows = event.pageData.rows;
-    let direction = event.pageData.direction;
-
-    let preparedQuery;
-
-    // event.info.filters.forEach((item: any) => {
-    //
-    // })
-
-    this.userService
-      .getAllUsersPaginated(page, rows, sort, direction, preparedQuery)
-      .subscribe(
-        (response) => {
-          this.paginatedData = response;
-        },
-        (error) => console.log(error)
-      );
+    let filter = [{field: event.field, value: event.value}];
+    this.userService.getAllUsersPaginated(0, 5, undefined, undefined, filter).subscribe(
+      (response) => {
+        this.paginatedData = response;
+      }
+    )
   }
 
   handleAction(event: any) {
