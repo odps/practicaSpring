@@ -3,33 +3,52 @@
   [tableStyle]="{ 'min-width': '50rem' }"
   [value]="content"
   showGridlines
-
   [paginator]="paginated"
   showCurrentPageReport
   [lazy]="true"
-
   (onPage)="onPagination($event)"
   [rows]="paginatedData.size"
   [totalRecords]="paginatedData.totalElements"
   [rowsPerPageOptions]="rowSize"
-  [currentPageReportTemplate]="'Showing {first} to {last} of {totalRecords} entries'"
-
+  [currentPageReportTemplate]="
+    'Showing {first} to {last} of {totalRecords} entries'
+  "
   (onSort)="onSortedColumn($event)"
   (onFilter)="onColumnFilter($event)"
 >
   <ng-template #caption>
     <div class="flex">
-      <p-button label="Clear" [outlined]="true" icon="pi pi-filter-slash" (click)="clear(dt)"/>
+      <p-button
+        label="Clear"
+        [outlined]="true"
+        icon="pi pi-filter-slash"
+        (click)="clear(dt)"
+      />
     </div>
   </ng-template>
 
   <ng-template pTemplate="header">
     <tr>
-      <th *ngFor="let field of alias" [pSortableColumn]="field" style="min-width:15rem">
+      <th
+        *ngFor="let field of alias"
+        [pSortableColumn]="field"
+        style="min-width: 15rem"
+      >
         <div class="flex items-center">
           {{ field }}
-          <p-columnFilter [type]="checkType(field)" [field]="getField(field)" display="menu"/>
+          <p-columnFilter
+            *ngIf="field !== 'Actions'"
+            [type]="checkType(field)"
+            [field]="getField(field)"
+            display="menu"
+          />
         </div>
+      </th>
+      <th
+        *ngIf="config.actions && !hasActionsColumn()"
+        style="min-width: 10rem"
+      >
+        Actions
       </th>
     </tr>
   </ng-template>
@@ -39,7 +58,26 @@
       <td *ngFor="let field of fields">
         {{ this.objectCheck(object, field) }}
       </td>
+      <td *ngIf="config.actions" class="flex gap-2">
+        <p-button
+          *ngIf="config.actions.edit"
+          icon="pi pi-pencil"
+          styleClass="p-button-warning p-button-sm"
+          (click)="onActionClick('edit', object)"
+        ></p-button>
+        <p-button
+          *ngIf="config.actions.delete"
+          icon="pi pi-trash"
+          styleClass="p-button-danger p-button-sm"
+          (click)="onActionClick('delete', object)"
+        ></p-button>
+        <p-button
+          *ngFor="let customAction of config.actions.custom"
+          [icon]="customAction.icon"
+          [styleClass]="customAction.styleClass || 'p-button-sm'"
+          (click)="onActionClick(customAction.label.toLowerCase(), object)"
+        ></p-button>
+      </td>
     </tr>
   </ng-template>
-
 </p-table>

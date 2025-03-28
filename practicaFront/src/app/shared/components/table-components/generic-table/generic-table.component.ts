@@ -1,22 +1,26 @@
-import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild} from '@angular/core';
-import {PaginatedList} from '../../../interfaces/paginatedList';
-import {Table, TableModule} from 'primeng/table';
-import {TableConfig} from '../../../interfaces/config/tableConfig';
-import {NgForOf} from '@angular/common';
-import {Button} from 'primeng/button';
-import {dt} from '@primeng/themes';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  OnInit,
+  Output,
+  SimpleChanges,
+  ViewChild,
+} from '@angular/core';
+import { PaginatedList } from '../../../interfaces/paginatedList';
+import { Table, TableModule } from 'primeng/table';
+import { TableConfig } from '../../../interfaces/config/tableConfig';
+import { NgForOf } from '@angular/common';
+import { Button } from 'primeng/button';
+import { dt } from '@primeng/themes';
 
 @Component({
   selector: 'app-generic-table',
   templateUrl: './generic-table.component.html',
-  imports: [
-    TableModule,
-    NgForOf,
-    Button
-  ],
-  styleUrls: ['./generic-table.component.css']
+  imports: [TableModule, NgForOf, Button],
+  styleUrls: ['./generic-table.component.css'],
 })
-
 export class GenericTableComponent implements OnInit, OnChanges {
   @Input() config: TableConfig = {} as TableConfig;
   @Input() paginatedData: PaginatedList = {} as PaginatedList;
@@ -24,6 +28,8 @@ export class GenericTableComponent implements OnInit, OnChanges {
   @Output() onPageChange: EventEmitter<any> = new EventEmitter();
   @Output() onSortedChange: EventEmitter<any> = new EventEmitter();
   @Output() onFilterChange: EventEmitter<any> = new EventEmitter();
+
+  @Output() onAction = new EventEmitter<{ action: string; item: any }>();
 
   @ViewChild('dt') dataTable: Table = dt();
 
@@ -39,8 +45,7 @@ export class GenericTableComponent implements OnInit, OnChanges {
 
   //
 
-  constructor() {
-  }
+  constructor() {}
 
   ngOnInit() {
     this.fields = this.config.fields;
@@ -80,7 +85,7 @@ export class GenericTableComponent implements OnInit, OnChanges {
       sort: this.fields[position],
       page: this.paginatedData.pageable.pageNumber,
       rows: this.paginatedData.size,
-      direction: event.order === 1 ? 'asc' : 'desc'
+      direction: event.order === 1 ? 'asc' : 'desc',
     });
   }
 
@@ -89,11 +94,11 @@ export class GenericTableComponent implements OnInit, OnChanges {
     this.onFilterChange.emit({
       info: event,
       pageData: {
-        sort: "",
+        sort: '',
         page: this.paginatedData.pageable.pageNumber,
         rows: this.paginatedData.size,
-        direction: 'asc'
-      }
+        direction: 'asc',
+      },
     });
   }
 
@@ -108,7 +113,10 @@ export class GenericTableComponent implements OnInit, OnChanges {
   }
 
   getField(field: any) {
-    return this.fields[this.alias.indexOf(field)]
+    return this.fields[this.alias.indexOf(field)];
   }
 
+  hasActionsColumn(): boolean {
+    return this.alias.includes('Actions');
+  }
 }
