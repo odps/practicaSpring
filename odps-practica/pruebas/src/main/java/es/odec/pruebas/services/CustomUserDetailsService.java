@@ -41,8 +41,8 @@ public class CustomUserDetailsService implements UserDetailsService {
         if (user == null) {
             throw new UsernameNotFoundException("User not found");
         }
-        System.out.println("=== Permisos encontrados de user en login: " + mapToAuthorities(user.getRole().getPermissions()));
-        if (user.getRole().getPermissions().isEmpty()) {
+//        System.out.println("=== Permisos encontrados de user en login: " + mapToAuthorities(user.getRole().getPermissions()));
+        if (user.getRole() == null || user.getRole().getPermissions().isEmpty()) {
             System.out.println("Este usuario no tiene rol asignados");
             return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), new ArrayList<>());
         }

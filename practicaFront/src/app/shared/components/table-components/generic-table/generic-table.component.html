@@ -13,7 +13,6 @@
   [currentPageReportTemplate]="
     'Showing {first} to {last} of {totalRecords} entries'
   "
-
   (onSort)="onSortedColumn($event)"
   (onFilter)="onColumnFilter($event)"
 >
@@ -29,36 +28,71 @@
   </ng-template>
 
   <ng-template pTemplate="header">
-
     <tr>
-      <th
-        *ngFor="let field of alias"
-        style="min-width: 10rem"
-      >
-        <input *ngIf="field !== 'Actions'"
-               pInputText [type]="checkType(field)"
-               [placeholder]="field"
-               (input)="onInputChange($event, field, getMatchMode(field))"
-        />
-      </th>
+      <ng-container *ngFor="let field of alias">
+        <th
+          *ngIf="field !== 'Actions' && checkType(field) !== 'date'"
+          style="min-width: 10rem"
+        >
+          <input
+            pInputText
+            [type]="checkType(field)"
+            [placeholder]="field"
+            (input)="onInputChange($event, field, getMatchMode(field))"
+          />
+        </th>
+        <th
+          *ngIf="field !== 'Actions' && checkType(field) === 'date'"
+          style="min-width: 10rem"
+        >
+          <div class="flex flex-column gap-2">
+            <input
+              pInputText
+              type="date"
+              [placeholder]="'After ' + field"
+              (input)="onDateAfterChange($event, field)"
+            />
+            <input
+              pInputText
+              type="date"
+              [placeholder]="'Before ' + field"
+              (input)="onDateBeforeChange($event, field)"
+            />
+          </div>
+        </th>
+        <th *ngIf="field === 'Actions'" style="min-width: 10rem"></th>
+      </ng-container>
     </tr>
 
     <tr>
-      <th
-        *ngFor="let field of alias"
-        [pSortableColumn]="field"
-        style="min-width: 10rem"
-      >
-        <div class="flex items-center">
+      <ng-container *ngFor="let field of alias">
+        <th
+          *ngIf="field !== 'Actions' && checkType(field) !== 'date'"
+          [pSortableColumn]="field"
+          style="min-width: 10rem"
+        >
+          <div class="flex items-center">
+            {{ field }}
+            <p-columnFilter
+              [type]="checkType(field)"
+              [field]="getField(field)"
+              display="menu"
+            />
+          </div>
+        </th>
+        <th
+          *ngIf="field !== 'Actions' && checkType(field) === 'date'"
+          [pSortableColumn]="field"
+          style="min-width: 10rem"
+        >
+          <div class="flex items-center">
+            {{ field }}
+          </div>
+        </th>
+        <th *ngIf="field === 'Actions'" style="min-width: 10rem">
           {{ field }}
-          <p-columnFilter
-            *ngIf="field !== 'Actions'"
-            [type]="checkType(field)"
-            [field]="getField(field)"
-            display="menu"
-          />
-        </div>
-      </th>
+        </th>
+      </ng-container>
       <th
         *ngIf="config.buttons && !hasActionsColumn()"
         style="min-width: 10rem"
@@ -71,7 +105,6 @@
   <ng-template pTemplate="body" let-object>
     <!--    Celdas de la tabla-->
     <tr>
-
       <td *ngFor="let field of fields">
         {{ this.objectCheck(object, field) }}
       </td>
@@ -83,10 +116,9 @@
           [icon]="button.icon"
           [styleClass]="button.styleClass || 'p-button-sm'"
           (click)="onActionClick(button.action.toLowerCase(), object)"
-        >{{ button.action }}
+          >{{ button.action }}
         </p-button>
       </td>
-
     </tr>
   </ng-template>
 </p-table>

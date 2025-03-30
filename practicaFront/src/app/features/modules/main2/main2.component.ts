@@ -1,11 +1,11 @@
-import {Component, OnInit} from '@angular/core';
-import {TableConfig} from '../../../shared/interfaces/config/tableConfig';
-import {UserService} from '../../../core/services/user.service';
-import {PaginatedList} from '../../../shared/interfaces/paginatedList';
-import {GenericTableComponent} from '../../../shared/components/table-components/generic-table/generic-table.component';
-import {NgIf} from '@angular/common';
-import {HeaderComponent} from '../../../shared/components/header/header.component';
-import {RoleService} from '../../../core/services/role.service';
+import { Component, OnInit } from '@angular/core';
+import { TableConfig } from '../../../shared/interfaces/config/tableConfig';
+import { UserService } from '../../../core/services/user.service';
+import { PaginatedList } from '../../../shared/interfaces/paginatedList';
+import { GenericTableComponent } from '../../../shared/components/table-components/generic-table/generic-table.component';
+import { NgIf } from '@angular/common';
+import { HeaderComponent } from '../../../shared/components/header/header.component';
+import { RoleService } from '../../../core/services/role.service';
 
 @Component({
   selector: 'app-main2',
@@ -63,7 +63,7 @@ export class Main2Component implements OnInit {
         action: 'Delete',
         icon: 'pi pi-eye',
         styleClass: 'p-button-danger p-button-sm m-1 p-2',
-      }
+      },
     ],
   };
 
@@ -80,8 +80,7 @@ export class Main2Component implements OnInit {
   constructor(
     private userService: UserService,
     private roleService: RoleService
-  ) {
-  }
+  ) {}
 
   ngOnInit() {
     this.getUsers();
@@ -163,12 +162,12 @@ export class Main2Component implements OnInit {
 
   onFilterChange(event: any) {
     console.log(event);
-    let filter = [{field: event.field, value: event.value}];
-    this.userService.getAllUsersPaginated(0, 5, undefined, undefined, filter).subscribe(
-      (response) => {
+    let filter = [{ field: event.field, value: event.value }];
+    this.userService
+      .getAllUsersPaginated(0, 5, undefined, undefined, filter)
+      .subscribe((response) => {
         this.paginatedData = response;
-      }
-    )
+      });
   }
 
   handleAction(event: any) {

@@ -49,17 +49,32 @@ public class AuthController {
     }
 
 //    @CrossOrigin(origins = "*")
-    @PostMapping("/login")
-    public ResponseEntity<?> loginUser(@RequestBody User authUser) throws Exception {
-        System.out.println("=== Entrada al endpoint de login");
+@PostMapping("/login")
+public ResponseEntity<?> loginUser(@RequestBody User authUser) {
+    try {
+        System.out.println("=== Attempting authentication for user: " + authUser.getUsername());
+
+        // Authenticate user
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(authUser.getUsername(), authUser.getPassword())
         );
+
+        System.out.println("=== Authentication successful");
+
+        // Load user details and generate token
         final UserDetails userDetails = userDetailsService.loadUserByUsername(authUser.getUsername());
         final String jwt = jwtUtil.generateToken(userDetails);
+
+        // Get full user information
         final User user = userService.getUserByUsername(authUser.getUsername()).getBody();
+
         return ResponseEntity.ok(new AuthUser(jwt, user));
+    } catch (Exception e) {
+        System.out.println("=== Authentication failed: " + e.getMessage());
+        e.printStackTrace();
+        return ResponseEntity.status(401).body("Authentication failed: " + e.getMessage());
     }
+}
 
     @GetMapping("/hello")
     public String hello() {

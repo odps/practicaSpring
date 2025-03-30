@@ -1,11 +1,20 @@
-import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild,} from '@angular/core';
-import {PaginatedList} from '../../../interfaces/paginatedList';
-import {Table, TableModule} from 'primeng/table';
-import {TableConfig} from '../../../interfaces/config/tableConfig';
-import {NgForOf, NgIf} from '@angular/common';
-import {Button} from 'primeng/button';
-import {dt} from '@primeng/themes';
-import {InputText} from 'primeng/inputtext';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  OnInit,
+  Output,
+  SimpleChanges,
+  ViewChild,
+} from '@angular/core';
+import { PaginatedList } from '../../../interfaces/paginatedList';
+import { Table, TableModule } from 'primeng/table';
+import { TableConfig } from '../../../interfaces/config/tableConfig';
+import { NgForOf, NgIf } from '@angular/common';
+import { Button } from 'primeng/button';
+import { dt } from '@primeng/themes';
+import { InputText } from 'primeng/inputtext';
 
 @Component({
   selector: 'app-generic-table',
@@ -34,10 +43,10 @@ export class GenericTableComponent implements OnInit, OnChanges {
   paginated: boolean = false;
   rowSize: number[] | undefined;
 
-  //
+  // Date filters
+  dateFilters: Map<string, { after?: string; before?: string }> = new Map();
 
-  constructor() {
-  }
+  constructor() {}
 
   ngOnInit() {
     this.fields = this.config.fields;
@@ -96,11 +105,11 @@ export class GenericTableComponent implements OnInit, OnChanges {
 
   clear() {
     this.dataTable.clear();
+    this.dateFilters.clear();
   }
 
   checkType(type: any): string {
     return this.config.types[0][this.fields[this.alias.indexOf(type)]];
-
   }
 
   getField(field: any) {
@@ -112,22 +121,65 @@ export class GenericTableComponent implements OnInit, OnChanges {
   }
 
   onActionClick(action: string, item: any) {
-    this.onAction.emit({action, item});
+    this.onAction.emit({ action, item });
   }
 
   getMatchMode(field: any) {
-
     if (this.config.matchMode) {
       return this.config.matchMode[0][this.getField(field)];
-    } else
-      return undefined;
+    } else return undefined;
   }
 
   onInputChange(event: any, value: any, matchMode: string) {
-    // console.log(value);
-    // console.log(event.target.value);
-    // console.log(matchMode);
-    this.onFilterChange.emit({field: matchMode, value: event.target.value});
+    this.onFilterChange.emit({
+      field: this.getField(value),
+      matchMode: matchMode || 'contains',
+      value: event.target.value,
+    });
   }
 
+  onDateAfterChange(event: any, field: string) {
+    const fieldName = this.getField(field);
+
+    if (!this.dateFilters.has(fieldName)) {
+      this.dateFilters.set(fieldName, {});
+    }
+
+    const filterValue = this.dateFilters.get(fieldName);
+    filterValue!.after = event.target.value;
+
+    this.emitDateFilter(fieldName);
+  }
+
+  onDateBeforeChange(event: any, field: string) {
+    const fieldName = this.getField(field);
+
+    if (!this.dateFilters.has(fieldName)) {
+      this.dateFilters.set(fieldName, {});
+    }
+
+    const filterValue = this.dateFilters.get(fieldName);
+    filterValue!.before = event.target.value;
+
+    this.emitDateFilter(fieldName);
+  }
+
+  emitDateFilter(fieldName: string) {
+    const filterValue = this.dateFilters.get(fieldName);
+
+    this.onFilterChange.emit({
+      field: fieldName,
+      type: 'date',
+      value: {
+        after: filterValue?.after,
+        before: filterValue?.before,
+      },
+      pageData: {
+        sort: '',
+        page: this.paginatedData.pageable.pageNumber,
+        rows: this.paginatedData.size,
+        direction: 'asc',
+      },
+    });
+  }
 }
