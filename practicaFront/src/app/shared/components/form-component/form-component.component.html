@@ -1,0 +1,69 @@
+<div *ngFor="let formGroup of formConfig.formGroups">
+
+  <form [formGroup]="getFormGroup(formGroup.alias)" (ngSubmit)="onSubmit($event)">
+
+    <div *ngFor="let formControl of formGroup.formControls">
+
+      <ng-container [ngSwitch]="formControl.type">
+
+        <p-select *ngSwitchCase="'select'"
+                  [options]="formControl.options"
+                  [formControlName]="formControl.name"
+                  optionLabel="label"
+                  [placeholder]="formControl.html?.placeholder"
+        ></p-select>
+
+        <p-ifta-label class="mt-3" *ngSwitchCase="'text'">
+          <label for="{{formControl.name}}">{{ formControl.html?.placeholder }}</label>
+          <input type="{{formControl.type}}" [name]="formControl.name" pInputText [formControlName]="formControl.name"/>
+        </p-ifta-label>
+
+        <p-input-number class="mt-3" *ngSwitchCase="'number'"
+                        [formControlName]="formControl.name"
+                        [name]="formControl.name"
+                        [min]="formControl.html?.min || 0" [max]="formControl.html?.max || 99"
+                        [showButtons]="formControl.html?.showButtons || true"
+                        [placeholder]="formControl.name"
+
+        ></p-input-number>
+
+        <p-date-picker *ngSwitchCase="'date'"
+                       [formControlName]="formControl.name"
+                       [showIcon]="true"
+                       inputId="buttondisplay"
+                       [showOnFocus]="false"
+                       [placeholder]="formControl.html?.placeholder"
+        ></p-date-picker>
+
+        <div *ngSwitchCase="'radiobutton'">
+          <div *ngFor="let option of formControl.options" class="field-checkbox">
+            <p-radio-button [inputId]="option.label"
+                            [value]="option.value"
+                            [formControlName]="formControl.name">
+            </p-radio-button>
+            <label [for]="option.label" class="ml-2">{{ option.label }}</label>
+          </div>
+        </div>
+
+        <p-multi-select *ngSwitchCase="'multiselect'"
+                        [options]="formControl.options"
+                        [formControlName]="formControl.name"
+                        optionLabel="label"
+                        placeholder="{{formControl.html?.placeholder}}"
+                        [maxSelectedLabels]="3"
+                        styleClass="w-full md:w-80"></p-multi-select>
+
+
+        <p-ifta-label class="mt-3" *ngSwitchDefault>
+          <label for="{{formControl.name}}">{{ formControl.html?.placeholder }}</label>
+          <input type="{{formControl.type}}" [name]="formControl.name" pInputText [formControlName]="formControl.name"/>
+        </p-ifta-label>
+
+      </ng-container>
+
+    </div>
+    <br>
+    <p-button type="input" [rounded]="true">Enviar</p-button>
+  </form>
+
+</div>

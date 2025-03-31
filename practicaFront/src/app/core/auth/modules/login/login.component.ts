@@ -27,7 +27,7 @@ export class LoginComponent {
           console.log('Login successful');
           localStorage.setItem('token', next.token);
           localStorage.setItem('currentUser', JSON.stringify(next.user));
-          this.router.navigate(['/main']);
+          this.router.navigate(['/main3']);
         }
       }, error => {
         console.error(error);
