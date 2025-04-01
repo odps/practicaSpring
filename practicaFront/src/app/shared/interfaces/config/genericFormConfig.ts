@@ -3,6 +3,7 @@ import {ValidatorFn} from '@angular/forms';
 export interface FormComponentConfig {
   formGroups: Array<{
     alias: string;
+    class?: string;
     //Propiedades y atributos del group
     formControls: Array<{
       //Propiedades y atributos del input o 'control'
@@ -19,6 +20,8 @@ export interface FormComponentConfig {
       html?: {
         //Placeholder
         placeholder: string;
+        //Class para modificar el contenedor del input
+        class?: string;
         //Botones
         showButtons?: boolean;
         // En caso de numbers y strings

@@ -6,6 +6,7 @@ import {Main2Component} from './features/modules/main2/main2.component';
 import {MainComponent} from './features/modules/main/main.component';
 import {hasRoleGuard} from './core/auth/guards/has-role.guard';
 import {Main3Component} from './features/modules/main3/main3.component';
+import {TestComponent} from './features/modules/test/test.component';
 
 export const routes: Routes = [
   {path: '', component: LoginComponent, canActivate: [loggedinGuard]},
@@ -14,5 +15,6 @@ export const routes: Routes = [
   {path: 'main', component: Main2Component},
   {path: 'main3', component: Main3Component},
   {path: 'unauthorized', component: UnauthorizedComponent},
+  {path: 'test', component: TestComponent},
   {path: '**', component: UnauthorizedComponent}, // Placeholder, por defecto seria pagina de error.
 ];
