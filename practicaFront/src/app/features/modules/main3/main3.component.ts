@@ -19,7 +19,7 @@ export class Main3Component {
         formControls: [
           {
             name: 'firstName',
-            validator: Validators.required,
+            validator: [Validators.required, Validators.minLength(5)],
             type: "text",
             html: {
               placeholder: "Name",

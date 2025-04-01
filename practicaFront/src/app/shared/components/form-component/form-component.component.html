@@ -15,9 +15,24 @@
 
         <p-ifta-label class="mt-3" *ngSwitchCase="'text'">
           <label for="{{formControl.name}}">{{ formControl.html?.placeholder }}</label>
-          <input type="{{formControl.type}}" [name]="formControl.name" pInputText [formControlName]="formControl.name"/>
-        </p-ifta-label>
+          <input
+            type="{{formControl.type}}"
+            [name]="formControl.name"
+            pInputText
+            [formControlName]="formControl.name"
+          />
 
+          <p-message
+            *ngIf="getFormControl(formGroup.alias, formControl.name)"
+            severity="error"
+            variant="simple"
+            size="small"
+          >
+            {{ formControl.html?.placeholder + ' is not valid' || 'field not valid' }}
+          </p-message>
+
+        </p-ifta-label>
+        
         <p-input-number class="mt-3" *ngSwitchCase="'number'"
                         [formControlName]="formControl.name"
                         [name]="formControl.name"
@@ -25,15 +40,28 @@
                         [showButtons]="formControl.html?.showButtons || true"
                         [placeholder]="formControl.name"
 
-        ></p-input-number>
+        >
 
-        <p-date-picker *ngSwitchCase="'date'"
-                       [formControlName]="formControl.name"
-                       [showIcon]="true"
-                       inputId="buttondisplay"
-                       [showOnFocus]="false"
-                       [placeholder]="formControl.html?.placeholder"
-        ></p-date-picker>
+        </p-input-number>
+
+        <ng-container *ngSwitchCase="'date'">
+          <p-date-picker
+            [formControlName]="formControl.name"
+            [showIcon]="true"
+            inputId="buttondisplay"
+            [showOnFocus]="false"
+            [placeholder]="formControl.html?.placeholder"
+          ></p-date-picker>
+          <p-message
+            *ngIf="getFormControl(formGroup.alias, formControl.name)"
+            severity="error"
+            variant="simple"
+            size="small"
+          >
+            {{ formControl.html?.placeholder + ' is not valid' || 'field not valid' }}
+          </p-message>
+        </ng-container>
+
 
         <div *ngSwitchCase="'radiobutton'">
           <div *ngFor="let option of formControl.options" class="field-checkbox">

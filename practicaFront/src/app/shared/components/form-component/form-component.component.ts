@@ -1,7 +1,7 @@
 import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {FormComponentConfig} from '../../interfaces/config/genericFormConfig';
-import {NgForOf, NgSwitch, NgSwitchCase, NgSwitchDefault} from '@angular/common';
+import {NgForOf, NgIf, NgSwitch, NgSwitchCase, NgSwitchDefault} from '@angular/common';
 import {InputText} from 'primeng/inputtext';
 import {IftaLabel} from 'primeng/iftalabel';
 import {DropdownModule} from 'primeng/dropdown';
@@ -11,6 +11,7 @@ import {DatePicker} from 'primeng/datepicker';
 import {MultiSelect} from 'primeng/multiselect';
 import {RadioButton} from 'primeng/radiobutton';
 import {Button} from 'primeng/button';
+import {Message} from 'primeng/message';
 
 @Component({
   selector: 'app-form-component',
@@ -29,7 +30,9 @@ import {Button} from 'primeng/button';
     DatePicker,
     MultiSelect,
     RadioButton,
-    Button
+    Button,
+    Message,
+    NgIf
   ],
   templateUrl: './form-component.component.html',
   styleUrl: './form-component.component.css'
@@ -79,13 +82,16 @@ export class FormComponentComponent implements OnInit, OnChanges {
   }
 
   onSubmit(event: any) {
-    console.log(event);
+    // console.log(event);
   }
-
 
   isValid(form: any) {
     // console.log(form)
     // console.log(this.formArray)
   }
 
+  getFormControl(alias: string, name: string) {
+    // console.log(this.getFormGroup(alias).controls[name]);
+    return this.getFormGroup(alias).controls[name].errors;
+  }
 }
